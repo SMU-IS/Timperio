@@ -44,7 +44,7 @@ class ShippingMethod(enum.Enum):
 
 
 class SalesPurchase(Base):
-    __tablename__ = "sales_purchase"
+    __tablename__ = "purchase_history"
 
     sales_id = Column(Integer, primary_key=True)
     sales_date = Column(Date, nullable=False)
