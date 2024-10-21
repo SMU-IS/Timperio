@@ -42,6 +42,20 @@ public class NewsletterServiceImpl implements NewsletterService {
 
         return exchange;
     }
+
+    public ResponseEntity<String> getCampaigns() {
+        String datacenter = this.mailChimpConstant.getDatacenter();
+        String url = String.format("https://%s.api.mailchimp.com/3.0/campaigns", datacenter);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBasicAuth("anystring", this.mailChimpConstant.getAPI_KEY());
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+        return exchange;
+    }
     
     public ResponseEntity<String> sendNewsletter(NewsletterRequestDTO newsletterRequestDTO) {
         // NewsletterResponseDTO responseDTO = new NewsletterResponseDTO(newsletterRequestDTO.getEmail(), "success");

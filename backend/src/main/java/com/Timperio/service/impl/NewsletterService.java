@@ -7,5 +7,8 @@ import com.Timperio.dto.NewsletterResponseDTO;
 
 public interface NewsletterService {
     ResponseEntity<String> healthCheck();
+
+    ResponseEntity<String> getCampaigns();
+    
     ResponseEntity<String> sendNewsletter(NewsletterRequestDTO newsletterRequestDTO);
 }
