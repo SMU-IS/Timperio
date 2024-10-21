@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.MediaType;
 import com.Timperio.dto.NewsletterRequestDTO;
 import com.Timperio.dto.NewsletterResponseDTO;
 import com.Timperio.config.MailChimpConstant;
+
 
 
 @Service
@@ -26,24 +28,39 @@ public class NewsletterServiceImpl implements NewsletterService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    public ResponseEntity<String> healthCheck() {
+        String datacenter = this.mailChimpConstant.getDatacenter();
+        String url = String.format("https://%s.api.mailchimp.com/3.0/ping", datacenter);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBasicAuth("anystring", this.mailChimpConstant.getAPI_KEY());
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+        return exchange;
+    }
     
     public ResponseEntity<String> sendNewsletter(NewsletterRequestDTO newsletterRequestDTO) {
         // NewsletterResponseDTO responseDTO = new NewsletterResponseDTO(newsletterRequestDTO.getEmail(), "success");
         // String hashedEmail = this.md5Encode(newsletterRequestDTO.getEmail());
 
-        String auth = Base64.encodeBase64String(("user:" + this.mailChimpConstant.getAPI_KEY()).getBytes());
         
-        System.out.println(auth);
         String datacenter = this.mailChimpConstant.getAPI_KEY().substring(this.mailChimpConstant.getAPI_KEY().lastIndexOf('-') + 1);
-        // String mailchimpUrl = "https://" + datacenter + ".api.mailchimp.com/3.0/lists/" + this.mailChimpConstant.() + "/members/" + ;
+        String campaignId = "a8be941ee5";
+        String url = String.format("https://%s.api.mailchimp.com/3.0/campaigns/%s/actions/test", datacenter, campaignId);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json");
-        headers.set("Authorization", "Basic " + auth);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBasicAuth("anystring", this.mailChimpConstant.getAPI_KEY());
 
         HttpEntity<NewsletterRequestDTO> requestEntity = new HttpEntity<>(newsletterRequestDTO, headers);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<String> exchange = restTemplate.exchange("https://" + datacenter + ".api.mailchimp.com/3.0/ping", HttpMethod.GET, entity, String.class);
+        String requestBody = "{\"test_emails\":[],\"send_type\":\"html\"}";
+
+        HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+        ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
         System.out.println(exchange.getBody());
         // ResponseEntity<NewsletterResponseDTO> response = new ResponseEntity<>(exchange.getBody(), exchange.getStatusCode());
@@ -55,4 +72,5 @@ public class NewsletterServiceImpl implements NewsletterService {
         }
     }
 }
+
 

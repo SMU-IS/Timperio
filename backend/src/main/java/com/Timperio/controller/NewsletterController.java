@@ -19,6 +19,11 @@ public class NewsletterController {
     @Autowired
     private NewsletterService newsletterService;
     
+    @GetMapping("/health-check")
+    public ResponseEntity<String> healthCheck() {
+        return this.newsletterService.healthCheck();
+    }
+    
     @PostMapping("/send")
     public ResponseEntity<String> sendNewsletter(@RequestBody NewsletterRequestDTO newsletterRequestDTO) {
         return this.newsletterService.sendNewsletter(newsletterRequestDTO);

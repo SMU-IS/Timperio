@@ -12,4 +12,8 @@ public class MailChimpConstant {
     public String getAPI_KEY() {
         return this.API_KEY;
     }
+
+    public String getDatacenter() {
+        return this.API_KEY.substring(this.API_KEY.lastIndexOf('-') + 1);
+    }
 }
