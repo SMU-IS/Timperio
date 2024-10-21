@@ -30,7 +30,13 @@ public abstract class User {
     private String userName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @Column(name = "role", insertable = false, updatable = false)
     private Role role;
+
+    public User(String userEmail, String password, String userName) {
+        this.userEmail = userEmail;
+        this.password = password;
+        this.userName = userName;
+    }
 
 }

@@ -14,11 +14,8 @@ public class SalesUser extends User {
     }
 
     public SalesUser(String userEmail, String password, String userName) {
-        super(); 
-        this.setUserEmail(userEmail);
-        this.setPassword(password);
-        this.setUserName(userName);
-        this.setRole(Role.SALES);
+        super(userEmail, password, userName);
+        this.setRole(Role.SALES); 
     }
 
     @Override

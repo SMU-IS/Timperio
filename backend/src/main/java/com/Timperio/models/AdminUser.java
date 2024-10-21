@@ -14,11 +14,8 @@ public class AdminUser extends User {
     }
 
     public AdminUser(String userEmail, String password, String userName) {
-        super(); 
-        this.setUserEmail(userEmail);
-        this.setPassword(password);
-        this.setUserName(userName);
-        this.setRole(Role.ADMIN);
+        super(userEmail, password, userName);
+        this.setRole(Role.ADMIN); 
     }
 
     @Override
