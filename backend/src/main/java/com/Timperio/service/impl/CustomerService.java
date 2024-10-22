@@ -6,6 +6,12 @@ import com.Timperio.models.Customer;
 public interface CustomerService {
     public Iterable<Customer> getAllCustomers();
 
+    Iterable<Customer> getHighValueCustomers();
+
+    Iterable<Customer> getMidTierCustomers();
+
+    Iterable<Customer> getLowSpentCustomers();
+
     // public Iterable<Customer> getCustomerSegment(CustomerSegment
     // customerSegment);
 
@@ -16,4 +22,5 @@ public interface CustomerService {
     // Double getTotalAmountOfSales(Iterable<Customer> customers);
 
     // Double getAverageOrderValue(Iterable<Customer> customers);
+
 }
