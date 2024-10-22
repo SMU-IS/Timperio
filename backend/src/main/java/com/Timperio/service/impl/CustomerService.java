@@ -4,9 +4,12 @@ package com.Timperio.service.impl;
 import com.Timperio.models.Customer;
 
 public interface CustomerService {
+
+    public void populateCustomersFromHistoryPurchases();
+
     public Iterable<Customer> getAllCustomers();
 
-    void sortCustomerIntoSegment();
+    // public void sortCustomerIntoSegment();
 
     // public Iterable<Customer> getCustomerSegment(CustomerSegment
     // customerSegment);

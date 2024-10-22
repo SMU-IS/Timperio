@@ -23,7 +23,7 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
 
     @Override
     public Iterable<PurchaseHistory> findByCustomerId(Integer id) {
-        return purchaseHistoryRepository.findByCustomerId(id);
+        return purchaseHistoryRepository.findByCustomer_CustomerId(id);
     }
 
     @Override
