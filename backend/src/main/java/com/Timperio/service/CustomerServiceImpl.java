@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.Timperio.constant.CustomerConstant;
+import com.Timperio.enums.CustomerSegment;
+import com.Timperio.enums.ErrorMessage;
 import com.Timperio.models.Customer;
 import com.Timperio.models.PurchaseHistory;
 import com.Timperio.service.impl.CustomerService;
@@ -61,36 +63,43 @@ public class CustomerServiceImpl implements CustomerService {
         return customers;
     }
 
+    public CustomerSegment getCustomerSegment(Customer customer) {
+        if (customer == null) {
+            throw new IllegalArgumentException(ErrorMessage.NO_CUSTOMER_FOUND.toString());
+        }
+
+        Double amountSpent = customer.getTotalSpending();
+
+        if (amountSpent == null) {
+            return CustomerSegment.LOW_SPEND;
+        }
+
+        if (amountSpent >= CustomerConstant.HIGH_VALUE_THRESHOLD) {
+            return CustomerSegment.HIGH_VALUE;
+        }
+        if (amountSpent >= CustomerConstant.MID_TIER_THRESHOLD) {
+            return CustomerSegment.MID_TIER;
+        }
+
+        return CustomerSegment.LOW_SPEND;
+    }
+
     @Override
-    public Iterable<Customer> getHighValueCustomers() {
+    public void sortCustomerIntoSegment() {
         for (Customer customer : customers) {
-            if (customer.getTotalSpending() >= CustomerConstant.HIGH_VALUE_THRESHOLD) {
+            Double amountSpent = customer.getTotalSpending();
+            if (amountSpent == null) {
+                lowSpendCustomers.add(customer);
+                continue;
+            }
+
+            if (amountSpent >= CustomerConstant.HIGH_VALUE_THRESHOLD) {
                 highValueCustomers.add(customer);
-            }
-        }
-        return highValueCustomers;
-    }
-
-    @Override
-    public Iterable<Customer> getMidTierCustomers() {
-        for (Customer customer : customers) {
-            Double amountSpent = customer.getTotalSpending();
-            if (amountSpent >= CustomerConstant.MID_TIER_THRESHOLD
-                    && amountSpent < CustomerConstant.HIGH_VALUE_THRESHOLD) {
+            } else if (amountSpent >= CustomerConstant.MID_TIER_THRESHOLD) {
                 midTierCustomers.add(customer);
-            }
-        }
-        return midTierCustomers;
-    }
-
-    @Override
-    public Iterable<Customer> getLowSpentCustomers() {
-        for (Customer customer : customers) {
-            Double amountSpent = customer.getTotalSpending();
-            if (amountSpent < CustomerConstant.LOW_SPENT_THRESHOLD) {
+            } else {
                 lowSpendCustomers.add(customer);
             }
         }
-        return midTierCustomers;
     }
 }

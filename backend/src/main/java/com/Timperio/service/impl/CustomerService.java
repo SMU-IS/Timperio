@@ -6,11 +6,7 @@ import com.Timperio.models.Customer;
 public interface CustomerService {
     public Iterable<Customer> getAllCustomers();
 
-    Iterable<Customer> getHighValueCustomers();
-
-    Iterable<Customer> getMidTierCustomers();
-
-    Iterable<Customer> getLowSpentCustomers();
+    void sortCustomerIntoSegment();
 
     // public Iterable<Customer> getCustomerSegment(CustomerSegment
     // customerSegment);
