@@ -76,7 +76,7 @@ public class CustomerServiceImpl implements CustomerService {
         for (Customer customer : customers) {
             Double amountSpent = customer.getTotalSpending();
             if (amountSpent >= CustomerConstant.MID_TIER_THRESHOLD
-                    && amountSpent <= CustomerConstant.HIGH_VALUE_THRESHOLD) {
+                    && amountSpent < CustomerConstant.HIGH_VALUE_THRESHOLD) {
                 midTierCustomers.add(customer);
             }
         }
@@ -87,7 +87,7 @@ public class CustomerServiceImpl implements CustomerService {
     public Iterable<Customer> getLowSpentCustomers() {
         for (Customer customer : customers) {
             Double amountSpent = customer.getTotalSpending();
-            if (amountSpent <= CustomerConstant.LOW_SPENT_THRESHOLD) {
+            if (amountSpent < CustomerConstant.LOW_SPENT_THRESHOLD) {
                 lowSpendCustomers.add(customer);
             }
         }
