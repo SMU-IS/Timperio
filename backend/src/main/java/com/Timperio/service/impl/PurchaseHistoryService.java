@@ -1,10 +1,9 @@
 package com.Timperio.service.impl;
 
-import com.Timperio.models.PurchaseHistory;
-
+import com.Timperio.enums.ChannelType;
 import com.Timperio.enums.SalesType;
 import com.Timperio.enums.ShippingMethod;
-import com.Timperio.enums.ChannelType;
+import com.Timperio.models.PurchaseHistory;
 
 public interface PurchaseHistoryService {
     public Iterable<PurchaseHistory> findAll();

@@ -1,11 +1,11 @@
 package com.Timperio.models;
 
-import lombok.Data;
-
-import com.Timperio.enums.*;
-
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+
+import com.Timperio.enums.ChannelType;
+import com.Timperio.enums.SalesType;
+import com.Timperio.enums.ShippingMethod;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +13,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
 @Table(name = "purchase_history")
@@ -27,12 +28,12 @@ public class PurchaseHistory {
 
     @Column(name = "sales_type", nullable = true)
     @Enumerated(EnumType.STRING)
-    @JdbcType(PostgreSQLEnumJdbcType.class) // Custom mapping for PostgreSQL ENUM types !MUST HAVE
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     private SalesType salesType;
 
     @Column(name = "channel_type", nullable = false)
     @Enumerated(EnumType.STRING)
-    @JdbcType(PostgreSQLEnumJdbcType.class) // Custom mapping for PostgreSQL ENUM types !MUST HAVE
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     private ChannelType channelType;
 
     @Column(name = "customer_id", nullable = false)
@@ -43,7 +44,7 @@ public class PurchaseHistory {
 
     @Column(name = "shipping_method", nullable = false)
     @Enumerated(EnumType.STRING)
-    @JdbcType(PostgreSQLEnumJdbcType.class) // Custom mapping for PostgreSQL ENUM types !MUST HAVE
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     private ShippingMethod shippingMethod;
 
     @Column(name = "product", nullable = false)
