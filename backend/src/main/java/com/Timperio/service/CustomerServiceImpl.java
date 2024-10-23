@@ -8,9 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.Timperio.constant.CustomerConstant;
 import com.Timperio.enums.CustomerSegment;
-import com.Timperio.enums.ErrorMessage;
 import com.Timperio.models.Customer;
 import com.Timperio.models.PurchaseHistory;
 import com.Timperio.repository.CustomerRepository;
