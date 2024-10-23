@@ -9,6 +9,8 @@ public interface CustomerService {
 
     public Iterable<Customer> getAllCustomers();
 
+    public Customer getCustomer(Integer customerId);
+
     // public void sortCustomerIntoSegment();
 
     // public Iterable<Customer> getCustomerSegment(CustomerSegment

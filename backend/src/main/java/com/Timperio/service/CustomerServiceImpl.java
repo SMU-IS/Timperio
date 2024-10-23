@@ -38,9 +38,10 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     public void populateCustomersFromHistoryPurchases() {
         Iterable<PurchaseHistory> purchaseHistories = purchaseHistoryService.findAll();
+
         for (PurchaseHistory purchaseHistory : purchaseHistories) {
             Integer customerId = purchaseHistory.getCustomer().getCustomerId();
-            String email = "joshuadavidang@outlook.sg";
+            String email = String.format("jane_doe_%d@yopmail.com", customerId);
             Double totalSpending = 0.0;
             String segment = CustomerSegment.LOW_SPEND.toString();
 
@@ -61,6 +62,11 @@ public class CustomerServiceImpl implements CustomerService {
     public Iterable<Customer> getAllCustomers() {
         Iterable<Customer> customers = customerRepository.findAll();
         return customers;
+    }
+
+    public Customer getCustomer(Integer customerId) {
+        Customer customer = customerRepository.findByCustomerId(customerId);
+        return customer;
     }
 
     // public CustomerSegment getCustomerSegment(Customer customer) {
