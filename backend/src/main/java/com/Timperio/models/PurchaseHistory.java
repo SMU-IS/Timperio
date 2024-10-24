@@ -45,9 +45,6 @@ public class PurchaseHistory {
     @JsonIgnore
     private Customer customer;
 
-    // @Column(name = "customer_id", nullable = false)
-    // private Integer customerId;
-
     @Column(name = "zip_code", nullable = false)
     private Integer zipCode;
 
