@@ -15,4 +15,10 @@ public interface PurchaseHistoryService {
     public Iterable<PurchaseHistory> findByChannelType(ChannelType channelType);
 
     public Iterable<PurchaseHistory> findByShippingMethod(ShippingMethod shippingMethod);
+
+    // Utils - Parse in Customer Purchase History as param
+    public int getSalesCount(Iterable<PurchaseHistory> purchaseHistoryList);
+    public double getSalesTotal(Iterable<PurchaseHistory> purchaseHistoryList);
+    public double getAvgOrderValue(Iterable<PurchaseHistory> purchaseHistoryList);
+
 }
