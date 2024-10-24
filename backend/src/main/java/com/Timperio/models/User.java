@@ -1,46 +1,47 @@
 package com.Timperio.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
+
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+
+import com.Timperio.enums.*;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "users")
-public class User {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public abstract class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "user_id")
+    private Integer userId;
 
-    @Column(nullable = false, unique = true)
-    private String username;
+    @Column(name = "user_email", nullable = false, length = 100)
+    private String userEmail;
 
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false, length = 100)
     private String password;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column(name = "user_name", nullable = false, length = 100)
+    private String userName;
 
-    public User(String email, String password) {
-        this.email = email;
+    @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(name = "role", insertable = false, updatable = false)
+    private Role role;
+
+    public User(String userEmail, String password, String userName) {
+        this.userEmail = userEmail;
         this.password = password;
+        this.userName = userName;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
