@@ -1,7 +1,8 @@
 package com.Timperio.service.impl;
 
-// import com.Timperio.enums.CustomerSegment;
+import com.Timperio.enums.CustomerSegment;
 import com.Timperio.models.Customer;
+import com.Timperio.models.Metric;
 
 public interface CustomerService {
 
@@ -13,15 +14,8 @@ public interface CustomerService {
 
     public Customer getCustomer(Integer customerId);
 
-    // public Iterable<Customer> getCustomerSegment(CustomerSegment
-    // customerSegment);
+    public Iterable<Customer> getCustomerByCustomerSegment(CustomerSegment customerSegment);
 
-    // String getMetrics(Iterable<Customer> customers);
-
-    // Integer getTotalNumberOfSales(Iterable<Customer> customers);
-
-    // Double getTotalAmountOfSales(Iterable<Customer> customers);
-
-    // Double getAverageOrderValue(Iterable<Customer> customers);
+    public Metric getMetrics();
 
 }

@@ -6,13 +6,15 @@ import org.springframework.stereotype.Service;
 import com.Timperio.constant.CustomerConstant;
 import com.Timperio.enums.CustomerSegment;
 import com.Timperio.models.Customer;
+import com.Timperio.models.Helper;
+import com.Timperio.models.Metric;
 import com.Timperio.models.PurchaseHistory;
 import com.Timperio.repository.CustomerRepository;
 import com.Timperio.service.impl.CustomerService;
 import com.Timperio.service.impl.PurchaseHistoryService;
 
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional;;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -27,7 +29,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     public void populateCustomersFromHistoryPurchases() {
-        Iterable<PurchaseHistory> purchaseHistories = purchaseHistoryService.findAll();
+        Iterable<PurchaseHistory> purchaseHistories = this.purchaseHistoryService.findAll();
 
         for (PurchaseHistory purchaseHistory : purchaseHistories) {
             Customer customer = purchaseHistory.getCustomer();
@@ -62,7 +64,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void sortCustomerIntoSegment() {
-        Iterable<Customer> customers = customerRepository.findAll();
+        Iterable<Customer> customers = this.customerRepository.findAll();
 
         for (Customer customer : customers) {
             Double amountSpent = customer.getTotalSpending();
@@ -85,14 +87,33 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Iterable<Customer> getAllCustomers() {
-        Iterable<Customer> customers = customerRepository.findAll();
+        Iterable<Customer> customers = this.customerRepository.findAll();
         return customers;
     }
 
     @Override
     public Customer getCustomer(Integer customerId) {
-        Customer customer = customerRepository.findByCustomerId(customerId);
+        Customer customer = this.customerRepository.findByCustomerId(customerId);
         return customer;
+    }
+
+    @Override
+    public Iterable<Customer> getCustomerByCustomerSegment(CustomerSegment customerSegment) {
+        Iterable<Customer> customerSegmentedList = this.customerRepository.findByCustomerSegment(customerSegment);
+        return customerSegmentedList;
+    }
+
+    @Override
+    public Metric getMetrics() {
+        Iterable<PurchaseHistory> purchaseHistories = this.purchaseHistoryService.findAll();
+        double totalSalesAmount = this.purchaseHistoryService.getSalesTotal(purchaseHistories);
+        int totalSalesCount = this.purchaseHistoryService.getSalesCount(purchaseHistories);
+        double totalAverageSales = this.purchaseHistoryService.getAvgOrderValue(purchaseHistories);
+
+        Metric metric = new Metric(Helper.formatToTwoDecimalPlaces(totalSalesAmount), totalSalesCount,
+                Helper.formatToTwoDecimalPlaces(totalAverageSales));
+
+        return metric;
     }
 
 }
