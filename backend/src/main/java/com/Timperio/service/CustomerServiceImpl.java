@@ -1,13 +1,12 @@
 package com.Timperio.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.Timperio.constant.CustomerConstant;
 import com.Timperio.enums.CustomerSegment;
 import com.Timperio.models.Customer;
 import com.Timperio.models.PurchaseHistory;
@@ -31,10 +30,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     Map<Integer, Customer> customerMap = new HashMap<>();
 
-    List<Customer> highValueCustomers = new ArrayList<>();
-    List<Customer> midTierCustomers = new ArrayList<>();
-    List<Customer> lowSpendCustomers = new ArrayList<>();
-
     @Transactional
     public void populateCustomersFromHistoryPurchases() {
         Iterable<PurchaseHistory> purchaseHistories = purchaseHistoryService.findAll();
@@ -42,74 +37,64 @@ public class CustomerServiceImpl implements CustomerService {
         for (PurchaseHistory purchaseHistory : purchaseHistories) {
             Customer customer = purchaseHistory.getCustomer();
             Integer customerId = customer.getCustomerId();
-            String email = String.format("jane_doe_%d@yopmail.com", customerId);
-            Double totalSpending = 0.0;
+            String customerEmail = String.format("jane_doe_%d@yopmail.com", customerId);
+            Double totalSpending = 1000000.0; // Need to retrieve from PurchaseHistory
             String customerSegment = CustomerSegment.LOW_SPEND.toString();
 
             if (!customerRepository.existsByCustomerId(customerId)) {
+                Customer newCustomer = new Customer();
+                newCustomer.setCustomerId(customerId);
+                newCustomer.setCustomerEmail(customerEmail);
+                newCustomer.setTotalSpending(totalSpending);
+
                 String sql = "INSERT INTO customer (customer_id, customer_email, total_spending, customer_segment) " +
                         "VALUES (:customerId, :email, :totalSpending, :customerSegment)";
 
                 entityManager.createNativeQuery(sql)
                         .setParameter("customerId", customerId)
-                        .setParameter("email", email)
+                        .setParameter("email", customerEmail)
                         .setParameter("totalSpending", totalSpending)
                         .setParameter("customerSegment", customerSegment)
                         .executeUpdate();
             }
         }
+
+        this.sortCustomerIntoSegment();
     }
 
+    @Override
+    public void sortCustomerIntoSegment() {
+        Iterable<Customer> customers = customerRepository.findAll();
+
+        for (Customer customer : customers) {
+            Double amountSpent = customer.getTotalSpending();
+            CustomerSegment customerSegment;
+
+            if (amountSpent == null || amountSpent == 0.0) {
+                customerSegment = CustomerSegment.LOW_SPEND;
+            } else if (amountSpent >= CustomerConstant.HIGH_VALUE_THRESHOLD) {
+                customerSegment = CustomerSegment.HIGH_VALUE;
+            } else if (amountSpent >= CustomerConstant.MID_TIER_THRESHOLD) {
+                customerSegment = CustomerSegment.MID_TIER;
+            } else {
+                customerSegment = CustomerSegment.LOW_SPEND;
+            }
+
+            customer.setCustomerSegment(customerSegment);
+            customerRepository.save(customer);
+        }
+    }
+
+    @Override
     public Iterable<Customer> getAllCustomers() {
         Iterable<Customer> customers = customerRepository.findAll();
         return customers;
     }
 
+    @Override
     public Customer getCustomer(Integer customerId) {
         Customer customer = customerRepository.findByCustomerId(customerId);
         return customer;
     }
 
-    // public CustomerSegment getCustomerSegment(Customer customer) {
-    // if (customer == null) {
-    // throw new
-    // IllegalArgumentException(ErrorMessage.NO_CUSTOMER_FOUND.toString());
-    // }
-
-    // Double amountSpent = customer.getTotalSpending();
-
-    // if (amountSpent == null) {
-    // return CustomerSegment.LOW_SPEND;
-    // }
-
-    // if (amountSpent >= CustomerConstant.HIGH_VALUE_THRESHOLD) {
-    // return CustomerSegment.HIGH_VALUE;
-    // }
-    // if (amountSpent >= CustomerConstant.MID_TIER_THRESHOLD) {
-    // return CustomerSegment.MID_TIER;
-    // }
-
-    // return CustomerSegment.LOW_SPEND;
-    // }
-
-    // @Override
-    // public void sortCustomerIntoSegment() {
-    // Iterable<Customer> customers = customerRepository.findAll();
-
-    // for (Customer customer : customers) {
-    // Double amountSpent = customer.getTotalSpending();
-    // if (amountSpent == null) {
-    // lowSpendCustomers.add(customer);
-    // continue;
-    // }
-
-    // if (amountSpent >= CustomerConstant.HIGH_VALUE_THRESHOLD) {
-    // highValueCustomers.add(customer);
-    // } else if (amountSpent >= CustomerConstant.MID_TIER_THRESHOLD) {
-    // midTierCustomers.add(customer);
-    // } else {
-    // lowSpendCustomers.add(customer);
-    // }
-    // }
-    // }
 }

@@ -7,11 +7,11 @@ public interface CustomerService {
 
     public void populateCustomersFromHistoryPurchases();
 
+    public void sortCustomerIntoSegment();
+
     public Iterable<Customer> getAllCustomers();
 
     public Customer getCustomer(Integer customerId);
-
-    // public void sortCustomerIntoSegment();
 
     // public Iterable<Customer> getCustomerSegment(CustomerSegment
     // customerSegment);
