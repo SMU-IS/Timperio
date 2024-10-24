@@ -32,15 +32,18 @@ public class CustomerServiceImpl implements CustomerService {
         for (PurchaseHistory purchaseHistory : purchaseHistories) {
             Customer customer = purchaseHistory.getCustomer();
             Integer customerId = customer.getCustomerId();
+            Iterable<PurchaseHistory> specificCustomerPurchaseHistory = this.purchaseHistoryService
+                    .findByCustomerId(customerId);
+
             String customerEmail = String.format("jane_doe_%d@yopmail.com", customerId);
-            Double totalSpending = 1000000.0; // Need to retrieve from PurchaseHistory
+            Double totalSpendingByCustomer = this.purchaseHistoryService.getSalesTotal(specificCustomerPurchaseHistory);
             String customerSegment = CustomerSegment.LOW_SPEND.toString();
 
             if (!customerRepository.existsByCustomerId(customerId)) {
                 Customer newCustomer = new Customer();
                 newCustomer.setCustomerId(customerId);
                 newCustomer.setCustomerEmail(customerEmail);
-                newCustomer.setTotalSpending(totalSpending);
+                newCustomer.setTotalSpending(totalSpendingByCustomer);
 
                 String sql = "INSERT INTO customer (customer_id, customer_email, total_spending, customer_segment) " +
                         "VALUES (:customerId, :email, :totalSpending, :customerSegment)";
@@ -48,7 +51,7 @@ public class CustomerServiceImpl implements CustomerService {
                 entityManager.createNativeQuery(sql)
                         .setParameter("customerId", customerId)
                         .setParameter("email", customerEmail)
-                        .setParameter("totalSpending", totalSpending)
+                        .setParameter("totalSpending", totalSpendingByCustomer)
                         .setParameter("customerSegment", customerSegment)
                         .executeUpdate();
             }
