@@ -1,5 +1,7 @@
 package com.Timperio.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,9 +38,14 @@ public class CustomerController {
         return this.customerService.getCustomer(customerId);
     }
 
+    @GetMapping("/tier/{customerId}")
+    public CustomerSegment getCustomerTier(@PathVariable Integer customerId) {
+        return this.customerService.getCustomerTier(customerId);
+    }
+
     @GetMapping("/segment/{customerSegment}")
-    public Iterable<Customer> getCustomerByCustomerSegment(@PathVariable CustomerSegment customerSegment) {
-        return this.customerService.getCustomerByCustomerSegment(customerSegment);
+    public List<Customer> getCustomerBySegment(@PathVariable CustomerSegment customerSegment) {
+        return this.customerService.getCustomerBySegment(customerSegment);
     }
 
     @GetMapping("/metrics")

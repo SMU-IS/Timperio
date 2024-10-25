@@ -1,5 +1,9 @@
 package com.Timperio.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +43,6 @@ public class CustomerServiceImpl implements CustomerService {
 
             String customerEmail = String.format("jane_doe_%d@yopmail.com", customerId);
             Double totalSpendingByCustomer = this.purchaseHistoryService.getSalesTotal(specificCustomerPurchaseHistory);
-            String customerSegment = CustomerSegment.LOW_SPEND.toString();
 
             if (!customerRepository.existsByCustomerId(customerId)) {
                 Customer newCustomer = new Customer();
@@ -47,47 +50,21 @@ public class CustomerServiceImpl implements CustomerService {
                 newCustomer.setCustomerEmail(customerEmail);
                 newCustomer.setTotalSpending(totalSpendingByCustomer);
 
-                String sql = "INSERT INTO customer (customer_id, customer_email, total_spending, customer_segment) " +
-                        "VALUES (:customerId, :email, :totalSpending, :customerSegment)";
+                String sql = "INSERT INTO customer (customer_id, customer_email, total_spending) " +
+                        "VALUES (:customerId, :email, :totalSpending)";
 
                 entityManager.createNativeQuery(sql)
                         .setParameter("customerId", customerId)
                         .setParameter("email", customerEmail)
                         .setParameter("totalSpending", totalSpendingByCustomer)
-                        .setParameter("customerSegment", customerSegment)
                         .executeUpdate();
             }
         }
-
-        this.sortCustomerIntoSegment();
     }
 
     @Override
-    public void sortCustomerIntoSegment() {
-        Iterable<Customer> customers = this.customerRepository.findAll();
-
-        for (Customer customer : customers) {
-            Double amountSpent = customer.getTotalSpending();
-            CustomerSegment customerSegment;
-
-            if (amountSpent == null || amountSpent == 0.0) {
-                customerSegment = CustomerSegment.LOW_SPEND;
-            } else if (amountSpent >= CustomerConstant.HIGH_VALUE_THRESHOLD) {
-                customerSegment = CustomerSegment.HIGH_VALUE;
-            } else if (amountSpent >= CustomerConstant.MID_TIER_THRESHOLD) {
-                customerSegment = CustomerSegment.MID_TIER;
-            } else {
-                customerSegment = CustomerSegment.LOW_SPEND;
-            }
-
-            customer.setCustomerSegment(customerSegment);
-            customerRepository.save(customer);
-        }
-    }
-
-    @Override
-    public Iterable<Customer> getAllCustomers() {
-        Iterable<Customer> customers = this.customerRepository.findAll();
+    public List<Customer> getAllCustomers() {
+        List<Customer> customers = this.customerRepository.findAll();
         return customers;
     }
 
@@ -97,10 +74,54 @@ public class CustomerServiceImpl implements CustomerService {
         return customer;
     }
 
+    private Map<CustomerSegment, Integer> calculateSegmentThresholds(List<Customer> customers) {
+        int totalCustomers = customers.size();
+        int highValueEndIndex = (int) Math.ceil(totalCustomers * CustomerConstant.HIGH_VALUE_THRESHOLD);
+        int midTierEndIndex = (int) Math.floor(totalCustomers * CustomerConstant.MID_TIER_THRESHOLD);
+
+        midTierEndIndex = Math.min(midTierEndIndex, totalCustomers);
+
+        Map<CustomerSegment, Integer> thresholds = new HashMap<>();
+        thresholds.put(CustomerSegment.HIGH_VALUE, highValueEndIndex);
+        thresholds.put(CustomerSegment.MID_TIER, midTierEndIndex);
+
+        return thresholds;
+    }
+
     @Override
-    public Iterable<Customer> getCustomerByCustomerSegment(CustomerSegment customerSegment) {
-        Iterable<Customer> customerSegmentedList = this.customerRepository.findByCustomerSegment(customerSegment);
-        return customerSegmentedList;
+    public CustomerSegment getCustomerTier(Integer customerId) {
+        Customer customer = this.getCustomer(customerId);
+        double totalSpending = customer.getTotalSpending();
+
+        List<Customer> customers = this.customerRepository.findAllSortedByTotalSpending();
+        Map<CustomerSegment, Integer> thresholds = calculateSegmentThresholds(customers);
+
+        if (totalSpending >= customers.get(thresholds.get(CustomerSegment.HIGH_VALUE) - 1).getTotalSpending()) {
+            return CustomerSegment.HIGH_VALUE;
+        } else if (totalSpending >= customers.get(thresholds.get(CustomerSegment.MID_TIER) - 1).getTotalSpending()) {
+            return CustomerSegment.MID_TIER;
+        } else {
+            return CustomerSegment.LOW_SPEND;
+        }
+    }
+
+    @Override
+    public List<Customer> getCustomerBySegment(CustomerSegment customerSegment) {
+        List<Customer> customers = this.customerRepository.findAllSortedByTotalSpending();
+        Integer totalCustomers = customers.size();
+        Map<CustomerSegment, Integer> thresholds = calculateSegmentThresholds(customers);
+
+        switch (customerSegment) {
+            case HIGH_VALUE:
+                return customers.subList(0, thresholds.get(CustomerSegment.HIGH_VALUE));
+            case MID_TIER:
+                return customers.subList(thresholds.get(CustomerSegment.HIGH_VALUE),
+                        thresholds.get(CustomerSegment.MID_TIER));
+            case LOW_SPEND:
+                return customers.subList(thresholds.get(CustomerSegment.MID_TIER), totalCustomers);
+            default:
+                return customers;
+        }
     }
 
     @Override

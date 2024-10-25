@@ -2,13 +2,9 @@ package com.Timperio.models;
 
 import java.util.List;
 
-import com.Timperio.enums.CustomerSegment;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -37,7 +33,4 @@ public class Customer {
     @Column(name = "total_spending", nullable = false)
     private Double totalSpending;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "customer_segment", nullable = false)
-    private CustomerSegment customerSegment;
 }
