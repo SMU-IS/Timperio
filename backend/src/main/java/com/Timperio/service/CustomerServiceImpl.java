@@ -116,4 +116,19 @@ public class CustomerServiceImpl implements CustomerService {
         return metric;
     }
 
+    @Override
+    public Metric getMetricsByCustomer(Integer customerId) {
+        Iterable<PurchaseHistory> specificCustomerPurchaseHistory = this.purchaseHistoryService
+                .findByCustomerId(customerId);
+
+        double totalSalesAmount = this.purchaseHistoryService.getSalesTotal(specificCustomerPurchaseHistory);
+        int totalSalesCount = this.purchaseHistoryService.getSalesCount(specificCustomerPurchaseHistory);
+        double totalAverageSales = this.purchaseHistoryService.getAvgOrderValue(specificCustomerPurchaseHistory);
+
+        Metric metric = new Metric(Helper.formatToTwoDecimalPlaces(totalSalesAmount), totalSalesCount,
+                Helper.formatToTwoDecimalPlaces(totalAverageSales));
+
+        return metric;
+    }
+
 }

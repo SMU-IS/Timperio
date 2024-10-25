@@ -18,4 +18,6 @@ public interface CustomerService {
 
     public Metric getMetrics();
 
+    public Metric getMetricsByCustomer(Integer customerId);
+
 }

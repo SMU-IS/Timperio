@@ -46,4 +46,9 @@ public class CustomerController {
         return this.customerService.getMetrics();
     }
 
+    @GetMapping("/metrics/{customerId}")
+    public Metric getMetricsByCustomerId(@PathVariable Integer customerId) {
+        return this.customerService.getMetricsByCustomer(customerId);
+    }
+
 }
