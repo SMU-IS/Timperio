@@ -324,10 +324,13 @@
     "fields": {
       "orderNumber": "Order Number",
       "orderID": "Order ID",
+      "customerID": "Customer ID",
       "status": "Status",
+      "salesType": "Sales Type",
       "store": "Store",
       "user": "User",
       "products": "Products",
+      "salesDate": "Sales Date",
       "createdAt": "CreatedAt",
       "amount": "Amount",
       "itemsAmount": "{{amount}} items",

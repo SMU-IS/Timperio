@@ -4,7 +4,8 @@ import {
   useNavigation,
   type HttpError,
   getDefaultFilter,
-} from "@refinedev/core";
+} from '@refinedev/core';
+import dayjs from 'dayjs';
 
 import {
   List,
@@ -15,21 +16,31 @@ import {
   useSelect,
   ExportButton,
   FilterDropdown,
-} from "@refinedev/antd";
-import { SearchOutlined } from "@ant-design/icons";
-import { Table, Input, Select, Typography, theme, InputNumber } from "antd";
+} from '@refinedev/antd';
+import { SearchOutlined } from '@ant-design/icons';
+import {
+  Table,
+  Input,
+  Select,
+  Typography,
+  theme,
+  InputNumber,
+  DatePicker,
+} from 'antd';
 
 import {
   OrderStatus,
   OrderActions,
   PaginationTotal,
   OrderTableColumnProducts,
-} from "../../components";
+} from '../../components';
 import type {
   IOrder,
   IOrderFilterVariables,
   IOrderStatus,
-} from "../../interfaces";
+} from '../../interfaces';
+import { userInfo } from 'os';
+const { RangePicker } = DatePicker;
 
 export const OrderList = () => {
   const { token } = theme.useToken();
@@ -42,14 +53,14 @@ export const OrderList = () => {
     filters: {
       initial: [
         {
-          field: "user.fullName",
-          operator: "contains",
-          value: "",
+          field: 'user.fullName',
+          operator: 'contains',
+          value: '',
         },
         {
-          field: "store.title",
-          operator: "contains",
-          value: "",
+          field: 'store.title',
+          operator: 'contains',
+          value: '',
         },
       ],
     },
@@ -70,16 +81,17 @@ export const OrderList = () => {
         orderNumber: item.orderNumber,
         status: item.status.text,
         store: item.store.title,
+        createdAt: item.store.createdAt,
         user: item.user.firstName,
       };
     },
   });
 
   const { selectProps: orderSelectProps } = useSelect<IOrderStatus>({
-    resource: "orderStatuses",
-    optionLabel: "text",
-    optionValue: "text",
-    defaultValue: getDefaultFilter("status.text", filters, "in"),
+    resource: 'orderStatuses',
+    optionLabel: 'text',
+    optionValue: 'text',
+    defaultValue: getDefaultFilter('status.text', filters, 'in'),
   });
 
   return (
@@ -92,12 +104,12 @@ export const OrderList = () => {
         {...tableProps}
         rowKey="id"
         style={{
-          cursor: "pointer",
+          cursor: 'pointer',
         }}
         onRow={(record) => {
           return {
             onClick: () => {
-              show("orders", record.id);
+              show('orders', record.id);
             },
           };
         }}
@@ -111,11 +123,11 @@ export const OrderList = () => {
         <Table.Column
           key="orderNumber"
           dataIndex="orderNumber"
-          title={t("orders.fields.order")}
+          title={t('orders.fields.order')}
           render={(value) => (
             <Typography.Text
               style={{
-                whiteSpace: "nowrap",
+                whiteSpace: 'nowrap',
               }}
             >
               #{value}
@@ -129,43 +141,33 @@ export const OrderList = () => {
               }}
             />
           )}
-          defaultFilteredValue={getDefaultFilter("orderNumber", filters, "eq")}
+          defaultFilteredValue={getDefaultFilter('orderNumber', filters, 'eq')}
           filterDropdown={(props) => (
             <FilterDropdown {...props}>
               <InputNumber
                 addonBefore="#"
-                style={{ width: "100%" }}
-                placeholder={t("orders.filter.orderNumber.placeholder")}
+                style={{ width: '100%' }}
+                placeholder={t('orders.filter.orderNumber.placeholder')}
               />
             </FilterDropdown>
           )}
         />
+
+        {/* Filter by Customer ID */}
         <Table.Column<IOrder>
-          key="status.text"
-          dataIndex="status"
-          title={t("orders.fields.status")}
-          render={(status) => {
-            return <OrderStatus status={status.text} />;
-          }}
-          sorter
-          defaultSortOrder={getDefaultSortOrder("status.text", sorters)}
-          defaultFilteredValue={getDefaultFilter("status.text", filters, "in")}
+          key="user.id"
+          dataIndex={['user', 'id']}
+          title={t('orders.fields.customerID')}
           filterDropdown={(props) => (
             <FilterDropdown {...props}>
-              <Select
-                {...orderSelectProps}
-                style={{ width: "200px" }}
-                allowClear
-                mode="multiple"
-                placeholder={t("orders.filter.status.placeholder")}
-              />
+              <Input placeholder={t('orders.filter.customerId.placeholder')} />
             </FilterDropdown>
           )}
         />
         <Table.Column<IOrder>
           key="products"
           dataIndex="products"
-          title={t("orders.fields.products")}
+          title={t('orders.fields.products')}
           render={(_, record) => {
             return <OrderTableColumnProducts order={record} />;
           }}
@@ -174,48 +176,26 @@ export const OrderList = () => {
           align="right"
           key="amount"
           dataIndex="amount"
-          title={t("orders.fields.amount")}
-          defaultSortOrder={getDefaultSortOrder("amount", sorters)}
+          title={t('orders.fields.amount')}
+          defaultSortOrder={getDefaultSortOrder('amount', sorters)}
           sorter
           render={(value) => {
             return (
               <NumberField
                 options={{
-                  currency: "USD",
-                  style: "currency",
+                  currency: 'USD',
+                  style: 'currency',
                 }}
                 value={value}
               />
             );
           }}
         />
-        <Table.Column
-          key="store.title"
-          dataIndex={["store", "title"]}
-          title={t("orders.fields.store")}
-          filterIcon={(filtered) => (
-            // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-            <SearchOutlined
-              style={{
-                color: filtered ? token.colorPrimary : undefined,
-              }}
-            />
-          )}
-          defaultFilteredValue={getDefaultFilter(
-            "store.title",
-            filters,
-            "contains",
-          )}
-          filterDropdown={(props) => (
-            <FilterDropdown {...props}>
-              <Input placeholder={t("orders.filter.store.placeholder")} />
-            </FilterDropdown>
-          )}
-        />
+
         <Table.Column
           key="user.fullName"
-          dataIndex={["user", "fullName"]}
-          title={t("orders.fields.customer")}
+          dataIndex={['user', 'fullName']}
+          title={t('orders.fields.customer')}
           filterIcon={(filtered) => (
             // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
             <SearchOutlined
@@ -225,26 +205,84 @@ export const OrderList = () => {
             />
           )}
           defaultFilteredValue={getDefaultFilter(
-            "user.fullName",
+            'user.fullName',
             filters,
-            "contains",
+            'contains'
           )}
           filterDropdown={(props) => (
             <FilterDropdown {...props}>
-              <Input placeholder={t("orders.filter.customer.placeholder")} />
+              <Input placeholder={t('orders.filter.customer.placeholder')} />
             </FilterDropdown>
           )}
         />
-        <Table.Column
+        {/* <Table.Column
           key="createdAt"
           dataIndex="createdAt"
-          title={t("orders.fields.createdAt")}
+          title={t('orders.fields.createdAt')}
           render={(value) => <DateField value={value} format="LLL" />}
           sorter
+        /> */}
+        {/* Filter by Sales Date */}
+        <Table.Column<IOrder>
+          key="createdAt"
+          dataIndex="createdAt"
+          title={t('orders.fields.salesDate')}
+          sorter
+          filterDropdown={(props) => {
+            const { setSelectedKeys, confirm, clearFilters, selectedKeys } =
+              props;
+
+            return (
+              <FilterDropdown {...props}>
+                <RangePicker
+                  style={{ width: '100%' }}
+                  onChange={(dates) => {
+                    console.log(dates);
+                    // Convert dates to the format you want to use for filtering
+                    setSelectedKeys(
+                      dates
+                        ? [dates[0].toISOString(), dates[1].toISOString()]
+                        : []
+                    );
+                  }}
+                  value={
+                    selectedKeys.length
+                      ? [dayjs(selectedKeys[0]), dayjs(selectedKeys[1])]
+                      : []
+                  } // Convert the selectedKeys to dayjs objects for RangePicker
+                />
+              </FilterDropdown>
+            );
+          }}
+          render={(value) => <DateField value={value} />} // Display date in the correct format
         />
+
+        <Table.Column<IOrder>
+          key="status.text"
+          dataIndex="status"
+          title={t('orders.fields.status')}
+          render={(status) => {
+            return <OrderStatus status={status.text} />;
+          }}
+          sorter
+          defaultSortOrder={getDefaultSortOrder('status.text', sorters)}
+          defaultFilteredValue={getDefaultFilter('status.text', filters, 'in')}
+          filterDropdown={(props) => (
+            <FilterDropdown {...props}>
+              <Select
+                {...orderSelectProps}
+                style={{ width: '200px' }}
+                allowClear
+                mode="multiple"
+                placeholder={t('orders.filter.status.placeholder')}
+              />
+            </FilterDropdown>
+          )}
+        />
+
         <Table.Column<IOrder>
           fixed="right"
-          title={t("table.actions")}
+          title={t('table.actions')}
           dataIndex="actions"
           key="actions"
           align="center"
