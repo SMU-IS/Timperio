@@ -6,12 +6,16 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import com.Timperio.enums.ChannelType;
 import com.Timperio.enums.SalesType;
 import com.Timperio.enums.ShippingMethod;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -36,8 +40,10 @@ public class PurchaseHistory {
     @JdbcType(PostgreSQLEnumJdbcType.class)
     private ChannelType channelType;
 
-    @Column(name = "customer_id", nullable = false)
-    private Integer customerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    @JsonIgnore
+    private Customer customer;
 
     @Column(name = "zip_code", nullable = false)
     private Integer zipCode;
@@ -61,4 +67,5 @@ public class PurchaseHistory {
 
     @Column(name = "total_price", nullable = false)
     private Double totalPrice;
+
 }

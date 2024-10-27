@@ -10,7 +10,7 @@ import com.Timperio.models.PurchaseHistory;
 
 @Repository
 public interface PurchaseHistoryRepository extends CrudRepository<PurchaseHistory, Integer> {
-    Iterable<PurchaseHistory> findByCustomerId(Integer customerId);
+    Iterable<PurchaseHistory> findByCustomer_CustomerId(Integer customerId);
 
     Iterable<PurchaseHistory> findBySalesType(SalesType salesType);
 
