@@ -23,12 +23,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUserId(userId);
     }
 
-    public User findByUserEmail(String userEmail) {
+    public Optional<User> findByUserEmail(String userEmail) {
         return userRepository.findByUserEmail(userEmail);
     }
 
-    public User findByUserName(String userName) {
-        return userRepository.findByUserName(userName);
+    public Optional<User> findByName(String userName) {
+        return userRepository.findByName(userName);
     }
 
     public List<User> findByRole(Role role) {
