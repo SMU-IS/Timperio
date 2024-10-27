@@ -11,7 +11,6 @@ import com.Timperio.models.PurchaseHistory;
 import com.Timperio.repository.PurchaseHistoryRepository;
 import com.Timperio.service.impl.PurchaseHistoryService;
 
-
 @Service
 public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
 
@@ -25,7 +24,7 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
 
     @Override
     public Iterable<PurchaseHistory> findByCustomerId(Integer id) {
-        return purchaseHistoryRepository.findByCustomerId(id);
+        return purchaseHistoryRepository.findByCustomer_CustomerId(id);
     }
 
     @Override
@@ -44,15 +43,16 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
     }
 
     @Override
-    public double getSalesTotal(Iterable<PurchaseHistory> purchaseHistoryList){
+    public double getSalesTotal(Iterable<PurchaseHistory> purchaseHistoryList) {
         double salesSum = 0.0;
         for (PurchaseHistory purchaseHistory : purchaseHistoryList) {
             salesSum += purchaseHistory.getTotalPrice();
         }
         return salesSum;
     }
+
     @Override
-    public double getAvgOrderValue(Iterable<PurchaseHistory> purchaseHistoryList){
+    public double getAvgOrderValue(Iterable<PurchaseHistory> purchaseHistoryList) {
         double salesSum = 0.0;
         int count = 0;
         for (PurchaseHistory purchaseHistory : purchaseHistoryList) {
@@ -64,8 +64,9 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
         }
         return salesSum / count;
     }
+
     @Override
-    public int getSalesCount(Iterable<PurchaseHistory> purchaseHistoryList){
+    public int getSalesCount(Iterable<PurchaseHistory> purchaseHistoryList) {
         return (int) StreamSupport.stream(purchaseHistoryList.spliterator(), false).count();
     }
 }

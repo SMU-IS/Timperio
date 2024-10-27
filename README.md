@@ -43,6 +43,12 @@
    backend - mvn spring-boot:run
    ```
 
+## API Documentation
+
+```
+http://localhost:8080/swagger-ui/index.html
+```
+
 ## Acknowledgements
 
 Developed by Team 5
