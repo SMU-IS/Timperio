@@ -12,6 +12,6 @@ CREATE TABLE users (
 
 INSERT INTO users (user_email, password, user_name, role, created_at, updated_at)
 VALUES
-    ('alice@timperio.com', 'password123', 'Alice Johnson', 'MARKETING', NOW(), NOW()),
-    ('bob@timperio.com', 'password123', 'Bob Smith', 'SALES', NOW(), NOW()),
-    ('charlie@timperio.com', 'password123', 'Charlie Lee', 'ADMIN', NOW(), NOW());
+    ('alice@timperio.com', '$2a$10$.ZPzfcohhejBIY6K8z2w/.5bx8iz5QKUNGKLAcTfW2xaIrp1LYs6O', 'Alice Johnson', 'MARKETING', NOW(), NOW()),
+    ('bob@timperio.com', '$2a$10$.ZPzfcohhejBIY6K8z2w/.5bx8iz5QKUNGKLAcTfW2xaIrp1LYs6O', 'Bob Smith', 'SALES', NOW(), NOW()),
+    ('charlie@timperio.com', '$2a$10$.ZPzfcohhejBIY6K8z2w/.5bx8iz5QKUNGKLAcTfW2xaIrp1LYs6O', 'Charlie Lee', 'ADMIN', NOW(), NOW());
