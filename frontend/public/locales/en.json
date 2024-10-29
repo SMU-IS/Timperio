@@ -285,11 +285,10 @@
     "timeline": {
       "title": "Timeline",
       "orderStatuses": {
-        "pending": "Preparing order",
-        "ready": "Order is ready",
-        "on the way": "Order is on the way",
-        "delivered": "Order is delivered",
-        "cancelled": "Order is cancelled"
+        "CONSIGNMENT": "Consignment",
+        "DIRECT_B2B": "DIRECT_B2B",
+        "MARKETING": "MARKETING",
+        "DIRECT_B2C": "DIRECT_B2C"
       }
     },
     "recentOrders": {
@@ -303,12 +302,11 @@
     }
   },
   "enum": {
-    "orderStatuses": {
-      "Pending": "Pending",
-      "Ready": "Ready",
-      "On The Way": "On the way",
-      "Delivered": "Delivered",
-      "Cancelled": "Cancelled"
+    "salesType": {
+      "CONSIGNMENT": "Consignment",
+      "DIRECT_B2B": "DIRECT_B2B",
+      "MARKETING": "MARKETING",
+      "DIRECT_B2C": "DIRECT_B2C"
     }
   },
   "orders": {

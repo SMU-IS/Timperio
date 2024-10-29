@@ -9,7 +9,7 @@ import { Tag } from 'antd';
 import { BikeIcon, BikeWhiteIcon } from '../../icons';
 
 type OrderStatusProps = {
-  status: 'jkmkv' | 'Ready' | 'On The Way' | 'Delivered' | 'Cancelled';
+  status: 'DIRECT_B2C' | 'DIRECT_B2B' | 'MARKETING' | 'CONSIGNMENT';
 };
 
 export const OrderStatus: React.FC<OrderStatusProps> = ({ status }) => {
@@ -18,36 +18,31 @@ export const OrderStatus: React.FC<OrderStatusProps> = ({ status }) => {
   let icon;
 
   switch (status) {
-    case 'Pending':
+    case 'CONSIGNMENT':
       color = 'orange';
       // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
       icon = <ClockCircleOutlined />;
       break;
-    case 'Ready':
+    case 'MARKETING':
       color = 'cyan';
       // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
       icon = <BellOutlined />;
       break;
-    case 'On The Way':
+    case 'DIRECT_B2C':
       color = 'blue';
       // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
       icon = <BikeWhiteIcon />;
       break;
-    case 'Delivered':
+    case 'DIRECT_B2B':
       color = 'green';
       // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
       icon = <CheckCircleOutlined />;
-      break;
-    case 'Cancelled':
-      color = 'red';
-      // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-      icon = <CloseCircleOutlined />;
       break;
   }
 
   return (
     <Tag color={color} icon={icon}>
-      {t(`enum.orderStatuses.${status}`)}
+      {t(`enum.salesType.${status}`)}
     </Tag>
   );
 };

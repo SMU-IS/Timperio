@@ -100,17 +100,18 @@ export interface ICourier {
 }
 
 export interface IOrder {
-  id: number;
-  user: IUser;
-  createdAt: string;
-  products: IProduct[];
-  salesType: IOrderSalesType; // Updated field
-  address: IAddress;
-  store: IStore;
-  courier: ICourier;
-  events: IEvent[];
-  orderNumber: number;
-  amount: number;
+  salesId: number; // Renamed from 'id' to 'salesId' to match the response
+  salesDate: string; // Corresponds to 'salesDate'
+  salesType: string; // Corresponds to 'salesType'
+  channelType: string; // Corresponds to 'channelType'
+  customerId: number; // Corresponds to 'customerId'
+  zipCode: number; // Corresponds to 'zipCode'
+  shippingMethod: string; // Corresponds to 'shippingMethod'
+  product: string; // Corresponds to 'product'
+  unitPrice: number; // Corresponds to 'unitPrice'
+  variant: number; // Corresponds to 'variant'
+  quantity: number; // Corresponds to 'quantity'
+  totalPrice: number; // Corresponds to 'totalPrice'
 }
 
 export interface IProduct {

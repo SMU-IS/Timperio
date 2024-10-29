@@ -7,6 +7,8 @@ import {
 } from '@refinedev/core';
 import dayjs from 'dayjs';
 
+import axios from 'axios';
+
 import {
   List,
   useTable,
@@ -28,6 +30,8 @@ import {
   DatePicker,
 } from 'antd';
 
+import React, { useEffect, useState } from 'react';
+
 import {
   OrderStatus,
   OrderActions,
@@ -37,20 +41,20 @@ import {
 import type {
   IOrder,
   IOrderFilterVariables,
-  IOrderSalesType,
+  IOrderStatus,
 } from '../../interfaces';
-
+import { userInfo } from 'os';
 const { RangePicker } = DatePicker;
 
 export const OrderList = () => {
   const { token } = theme.useToken();
+  const [tableData, setTableData] = useState<IOrder[]>([]); // Define state for table data
 
   const { tableProps, sorters, filters } = useTable<
     IOrder,
     HttpError,
     IOrderFilterVariables
   >({
-    resource: 'purchaseHistory', // Use the endpoint for purchase history
     filters: {
       initial: [
         {
@@ -77,19 +81,63 @@ export const OrderList = () => {
     maxItemCount: 50,
     mapData: (item) => {
       return {
-        id: item.salesId, // Adjusted to salesId
-        amount: item.totalPrice, // Adjusted to totalPrice
-        orderNumber: item.salesId, // Assuming salesId is treated as order number
-        status: item.salesType, // Adjusted to salesType
-        // store: item.store.title,
-        createdAt: item.salesDate, // Adjusted to salesDate
-        user: item.customerId,
+        id: item.id,
+        amount: item.amount,
+        orderNumber: item.orderNumber,
+        status: item.status.text,
+        store: item.store.title,
+        createdAt: item.store.createdAt,
+        user: item.user.firstName,
       };
     },
   });
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        'http://localhost:8080/api/v1/purchaseHistory'
+      );
+      const data = response.data;
+      console.log('response', data);
 
-  const { selectProps: orderSelectProps } = useSelect<IOrderSalesType>({
-    resource: 'purchaseHistory',
+      // Map the API response to match your table structure
+      const mappedData = data.map((item) => ({
+        id: item.salesId,
+        orderNumber: item.salesId,
+        amount: item.totalPrice,
+        createdAt: item.salesDate,
+        user: {
+          id: item.customerId,
+          fullName: `Customer ${item.customerId}`, // Replace with actual customer name if available
+        },
+        products: [
+          {
+            product: item.product,
+            unitPrice: item.unitPrice,
+            variant: item.variant,
+            quantity: item.quantity,
+            totalPrice: item.totalPrice,
+          },
+        ],
+        status: {
+          text: item.salesType,
+        },
+        shippingMethod: item.shippingMethod,
+        channelType: item.channelType,
+        zipCode: item.zipCode,
+      }));
+
+      setTableData(mappedData); // Update tableData state with the fetched data
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []); // Fetch data when component mounts
+
+  const { selectProps: orderSelectProps } = useSelect<IOrderStatus>({
+    resource: 'orderStatuses',
     optionLabel: 'text',
     optionValue: 'text',
     defaultValue: getDefaultFilter('status.text', filters, 'in'),
@@ -102,20 +150,19 @@ export const OrderList = () => {
       }}
     >
       <Table
-        {...tableProps}
-        rowKey="salesId" // Changed to salesId for row key
+        dataSource={tableData} // Set data source to fetched data
+        rowKey="id"
         style={{
           cursor: 'pointer',
         }}
         onRow={(record) => {
           return {
             onClick: () => {
-              show('orders', record.salesId); // Changed to salesId
+              show('orders', record.id);
             },
           };
         }}
         pagination={{
-          ...tableProps.pagination,
           showTotal: (total) => (
             <PaginationTotal total={total} entityName="orders" />
           ),
@@ -123,7 +170,7 @@ export const OrderList = () => {
       >
         <Table.Column
           key="orderNumber"
-          dataIndex="salesId" // Adjusted to salesId
+          dataIndex="orderNumber"
           title={t('orders.fields.order')}
           render={(value) => (
             <Typography.Text
@@ -141,7 +188,6 @@ export const OrderList = () => {
               }}
             />
           )}
-          defaultFilteredValue={getDefaultFilter('salesId', filters, 'eq')} // Changed to salesId
           filterDropdown={(props) => (
             <FilterDropdown {...props}>
               <InputNumber
@@ -153,9 +199,10 @@ export const OrderList = () => {
           )}
         />
 
+        {/* Filter by Customer ID */}
         <Table.Column<IOrder>
           key="user.id"
-          dataIndex="customerId"
+          dataIndex={['user', 'id']}
           title={t('orders.fields.customerID')}
           filterDropdown={(props) => (
             <FilterDropdown {...props}>
@@ -164,34 +211,30 @@ export const OrderList = () => {
           )}
         />
         <Table.Column<IOrder>
-          key="product"
-          dataIndex="product" // Adjusted to access product name directly
+          key="products"
+          dataIndex="products"
           title={t('orders.fields.products')}
-          // render={(_, record) => {
-          //   return <OrderTableColumnProducts order={record} />;
-          // }}
+          render={(_, record) => {
+            return <OrderTableColumnProducts order={record} />;
+          }}
         />
         <Table.Column
           align="right"
           key="amount"
-          dataIndex="totalPrice" // Adjusted to totalPrice
+          dataIndex="amount"
           title={t('orders.fields.amount')}
-          defaultSortOrder={getDefaultSortOrder('totalPrice', sorters)} // Adjusted to totalPrice
-          sorter
-          render={(value) => {
-            return (
-              <NumberField
-                options={{
-                  currency: 'SGD',
-                  style: 'currency',
-                }}
-                value={value}
-              />
-            );
-          }}
+          render={(value) => (
+            <NumberField
+              options={{
+                currency: 'SGD',
+                style: 'currency',
+              }}
+              value={value}
+            />
+          )}
         />
 
-        {/* <Table.Column
+        <Table.Column
           key="user.fullName"
           dataIndex={['user', 'fullName']}
           title={t('orders.fields.customer')}
@@ -202,60 +245,25 @@ export const OrderList = () => {
               }}
             />
           )}
-          defaultFilteredValue={getDefaultFilter(
-            'user.fullName',
-            filters,
-            'contains'
-          )}
           filterDropdown={(props) => (
             <FilterDropdown {...props}>
               <Input placeholder={t('orders.filter.customer.placeholder')} />
             </FilterDropdown>
           )}
-        /> */}
+        />
 
         <Table.Column<IOrder>
-          key="salesDate"
-          dataIndex="salesDate" // Adjusted to salesDate
+          key="createdAt"
+          dataIndex="createdAt"
           title={t('orders.fields.salesDate')}
-          sorter
-          filterDropdown={(props) => {
-            const { setSelectedKeys, confirm, clearFilters, selectedKeys } =
-              props;
-
-            return (
-              <FilterDropdown {...props}>
-                <RangePicker
-                  style={{ width: '100%' }}
-                  onChange={(dates) => {
-                    setSelectedKeys(
-                      dates
-                        ? [dates[0].toISOString(), dates[1].toISOString()]
-                        : []
-                    );
-                  }}
-                  value={
-                    selectedKeys.length
-                      ? [dayjs(selectedKeys[0]), dayjs(selectedKeys[1])]
-                      : []
-                  }
-                />
-              </FilterDropdown>
-            );
-          }}
           render={(value) => <DateField value={value} />}
         />
 
         <Table.Column<IOrder>
-          key="salesType"
-          dataIndex="salesType" // Adjusted to salesType
-          title={t('orders.fields.salesType')}
-          render={(salesType) => {
-            return <OrderStatus status={salesType} />; // Adjusted to render salesType
-          }}
-          sorter
-          defaultSortOrder={getDefaultSortOrder('salesType', sorters)} // Adjusted to salesType
-          defaultFilteredValue={getDefaultFilter('salesType', filters, 'in')}
+          key="status.text"
+          dataIndex="status"
+          title={t('orders.fields.status')}
+          render={(status) => <OrderStatus status={status} />}
           filterDropdown={(props) => (
             <FilterDropdown {...props}>
               <Select
@@ -269,14 +277,14 @@ export const OrderList = () => {
           )}
         />
 
-        {/* <Table.Column<IOrder>
+        <Table.Column<IOrder>
           fixed="right"
           title={t('table.actions')}
           dataIndex="actions"
           key="actions"
           align="center"
           render={(_value, record) => <OrderActions record={record} />}
-        /> */}
+        />
       </Table>
     </List>
   );
