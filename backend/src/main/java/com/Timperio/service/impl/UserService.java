@@ -10,9 +10,9 @@ public interface UserService {
 
     public User findByUserId(Integer userId);
 
-    public User findByUserEmail(String userEmail);
+    public Optional<User> findByUserEmail(String userEmail);
 
-    public User findByUserName(String userName);
+    public Optional<User> findByName(String userName);
 
     public List<User> findByRole(Role role);
 }
