@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.Timperio.dto.PurchaseHistoryDto;
@@ -18,9 +19,9 @@ public interface PurchaseHistoryRepository extends CrudRepository<PurchaseHistor
     List<PurchaseHistory> findAll();
 
     @Query("SELECT new com.Timperio.dto.PurchaseHistoryDto(p.customer.customerId, p.salesType, p.totalPrice, p.salesDate) "
-            +
-            "FROM PurchaseHistory p")
-    List<PurchaseHistoryDto> findAllFilteredPurchaseHistories();
+            + "FROM PurchaseHistory p "
+            + "WHERE (:customerId IS NULL OR p.customer.customerId = :customerId)")
+    List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(@Param("customerId") Integer customerId);
 
     List<PurchaseHistory> findByCustomer_CustomerId(Integer customerId);
 

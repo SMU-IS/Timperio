@@ -11,7 +11,7 @@ import com.Timperio.models.PurchaseHistory;
 public interface PurchaseHistoryService {
     public List<PurchaseHistory> findAll();
 
-    public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories();
+    public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(Integer customerId);
 
     public List<PurchaseHistory> findByCustomerId(Integer id);
 
