@@ -47,6 +47,8 @@ public class SecurityConfig {
                         .requestMatchers(("/swagger-ui/**")).permitAll()
                         .requestMatchers("/api/v1/purchaseHistory")
                         .hasAnyRole(Role.MARKETING.toString(), Role.SALES.toString())
+                        .requestMatchers("/api/v1/export")
+                        .hasRole(Role.MARKETING.toString())
                         .anyRequest().authenticated())
 
                 .exceptionHandling(exceptionHandling -> exceptionHandling
