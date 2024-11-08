@@ -1,9 +1,12 @@
 package com.Timperio.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import java.util.List;
 import java.util.stream.StreamSupport;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.Timperio.dto.PurchaseHistoryDto;
 import com.Timperio.enums.ChannelType;
 import com.Timperio.enums.SalesType;
 import com.Timperio.enums.ShippingMethod;
@@ -18,32 +21,37 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
     private PurchaseHistoryRepository purchaseHistoryRepository;
 
     @Override
-    public Iterable<PurchaseHistory> findAll() {
+    public List<PurchaseHistory> findAll() {
         return purchaseHistoryRepository.findAll();
     }
 
     @Override
-    public Iterable<PurchaseHistory> findByCustomerId(Integer id) {
+    public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories() {
+        return purchaseHistoryRepository.findAllFilteredPurchaseHistories();
+    }
+
+    @Override
+    public List<PurchaseHistory> findByCustomerId(Integer id) {
         return purchaseHistoryRepository.findByCustomer_CustomerId(id);
     }
 
     @Override
-    public Iterable<PurchaseHistory> findBySalesType(SalesType salesType) {
+    public List<PurchaseHistory> findBySalesType(SalesType salesType) {
         return purchaseHistoryRepository.findBySalesType(salesType);
     }
 
     @Override
-    public Iterable<PurchaseHistory> findByChannelType(ChannelType channelType) {
+    public List<PurchaseHistory> findByChannelType(ChannelType channelType) {
         return purchaseHistoryRepository.findByChannelType(channelType);
     }
 
     @Override
-    public Iterable<PurchaseHistory> findByShippingMethod(ShippingMethod shippingMethod) {
+    public List<PurchaseHistory> findByShippingMethod(ShippingMethod shippingMethod) {
         return purchaseHistoryRepository.findByShippingMethod(shippingMethod);
     }
 
     @Override
-    public double getSalesTotal(Iterable<PurchaseHistory> purchaseHistoryList) {
+    public double getSalesTotal(List<PurchaseHistory> purchaseHistoryList) {
         double salesSum = 0.0;
         for (PurchaseHistory purchaseHistory : purchaseHistoryList) {
             salesSum += purchaseHistory.getTotalPrice();
@@ -52,7 +60,7 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
     }
 
     @Override
-    public double getAvgOrderValue(Iterable<PurchaseHistory> purchaseHistoryList) {
+    public double getAvgOrderValue(List<PurchaseHistory> purchaseHistoryList) {
         double salesSum = 0.0;
         int count = 0;
         for (PurchaseHistory purchaseHistory : purchaseHistoryList) {
@@ -66,7 +74,7 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
     }
 
     @Override
-    public int getSalesCount(Iterable<PurchaseHistory> purchaseHistoryList) {
+    public int getSalesCount(List<PurchaseHistory> purchaseHistoryList) {
         return (int) StreamSupport.stream(purchaseHistoryList.spliterator(), false).count();
     }
 }

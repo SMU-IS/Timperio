@@ -40,6 +40,9 @@ public class PurchaseHistory {
     @JdbcType(PostgreSQLEnumJdbcType.class)
     private ChannelType channelType;
 
+    @Column(name = "customer_id", nullable = false, insertable = false, updatable = false)
+    private Integer customerId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     @JsonIgnore
