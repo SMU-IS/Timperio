@@ -34,6 +34,8 @@
    DB_USERNAME=postgres
    DB_PASSWORD=root
    PYTHON_DB_URL=postgresql://postgres:root@localhost:5432/timperiodb
+   JWT_SECRET_KEY={JWT_SECRET_KEY}
+   SERVER=//localhost:5173
    ```
 
 4. Run the project in development environment
