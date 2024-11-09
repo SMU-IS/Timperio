@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import com.Timperio.enums.Role;
 import com.Timperio.models.User;
 import com.Timperio.service.impl.UserService;
-import com.Timperio.dto.CreateUserDto;
+import com.Timperio.dto.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -39,6 +39,13 @@ public class UserController {
     public ResponseEntity<String> deleteUserByEmail(@PathVariable String userEmail) {
         this.userService.deleteUserByEmail(userEmail);
         return ResponseEntity.ok("User deleted successfully");
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/{userId}")
+    public ResponseEntity<User> updateUser(@PathVariable Integer userId, @RequestBody UpdateUserDto updateUserDto) {
+        User updatedUser = this.userService.updateUser(userId, updateUserDto);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @GetMapping()

@@ -3,7 +3,7 @@ package com.Timperio.service.impl;
 import java.util.*;
 import com.Timperio.models.User;
 import com.Timperio.enums.*;
-import com.Timperio.dto.CreateUserDto;
+import com.Timperio.dto.*;
 
 public interface UserService {
 
@@ -12,6 +12,8 @@ public interface UserService {
     public void deleteUserById(Integer userId);
 
     public void deleteUserByEmail(String userEmail);
+
+    public User updateUser(Integer userId, UpdateUserDto input);
 
     public List<User> findAll();
 
