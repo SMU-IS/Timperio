@@ -67,7 +67,7 @@ public class PurchaseHistory {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
-
+    
     @Column(name = "total_price", nullable = false)
     private Double totalPrice;
 
