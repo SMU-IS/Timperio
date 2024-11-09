@@ -3,12 +3,7 @@ package com.Timperio.controller;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -28,8 +23,22 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping()
     public ResponseEntity<User> createUser(@RequestBody CreateUserDto createUserDto) {
-        User newUser = userService.createUser(createUserDto);
+        User newUser = this.userService.createUser(createUserDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/id/{userId}")
+    public ResponseEntity<String> deleteUserById(@PathVariable Integer userId) {
+        this.userService.deleteUserById(userId);
+        return ResponseEntity.ok("User deleted successfully");
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/email/{userEmail}")
+    public ResponseEntity<String> deleteUserByEmail(@PathVariable String userEmail) {
+        this.userService.deleteUserByEmail(userEmail);
+        return ResponseEntity.ok("User deleted successfully");
     }
 
     @GetMapping()

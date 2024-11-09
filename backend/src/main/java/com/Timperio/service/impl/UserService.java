@@ -9,6 +9,10 @@ public interface UserService {
 
     public User createUser(CreateUserDto input);
 
+    public void deleteUserById(Integer userId);
+
+    public void deleteUserByEmail(String userEmail);
+
     public List<User> findAll();
 
     public User findByUserId(Integer userId);

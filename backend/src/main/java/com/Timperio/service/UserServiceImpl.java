@@ -7,6 +7,7 @@ import java.util.*;
 import com.Timperio.enums.*;
 import com.Timperio.models.*;
 import com.Timperio.dto.*;
+import com.Timperio.exceptions.*;
 import com.Timperio.repository.UserRepository;
 import com.Timperio.service.impl.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
     public User createUser(CreateUserDto input) {
         User user;
-    
+        
         switch (input.getRole()) {
             case ADMIN:
                 user = new AdminUser(); 
@@ -50,6 +51,27 @@ public class UserServiceImpl implements UserService {
     
         return userRepository.save(user);
     }
+
+    public void deleteUserById(Integer userId){
+        try {
+            User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+            userRepository.delete(user);
+        } catch (Exception e) {
+            throw new RuntimeException("An unexpected error occurred while deleting the user.");
+        }
+        
+    };
+
+    public void deleteUserByEmail(String userEmail){
+        try {
+            User user = userRepository.findByUserEmail(userEmail)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userEmail));
+            userRepository.delete(user);
+        } catch (Exception e) {
+            throw new RuntimeException("An unexpected error occurred while deleting the user.");
+        }
+    };
 
     public List<User> findAll() {
         return userRepository.findAll();
