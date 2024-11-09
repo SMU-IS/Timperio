@@ -5,7 +5,6 @@ import com.Timperio.service.impl.NewsletterService;
 import lombok.AllArgsConstructor;
 
 import org.apache.catalina.connector.Response;
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
