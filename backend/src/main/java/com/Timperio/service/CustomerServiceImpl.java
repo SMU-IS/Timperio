@@ -33,12 +33,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     public void populateCustomersFromHistoryPurchases() {
-        Iterable<PurchaseHistory> purchaseHistories = this.purchaseHistoryService.findAll();
+        List<PurchaseHistory> purchaseHistories = this.purchaseHistoryService.findAll();
 
         for (PurchaseHistory purchaseHistory : purchaseHistories) {
             Customer customer = purchaseHistory.getCustomer();
             Integer customerId = customer.getCustomerId();
-            Iterable<PurchaseHistory> specificCustomerPurchaseHistory = this.purchaseHistoryService
+            List<PurchaseHistory> specificCustomerPurchaseHistory = this.purchaseHistoryService
                     .findByCustomerId(customerId);
 
             String customerEmail = String.format("jane_doe_%d@yopmail.com", customerId);
@@ -126,7 +126,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Metric getMetrics() {
-        Iterable<PurchaseHistory> purchaseHistories = this.purchaseHistoryService.findAll();
+        List<PurchaseHistory> purchaseHistories = this.purchaseHistoryService.findAll();
         double totalSalesAmount = this.purchaseHistoryService.getSalesTotal(purchaseHistories);
         int totalSalesCount = this.purchaseHistoryService.getSalesCount(purchaseHistories);
         double totalAverageSales = this.purchaseHistoryService.getAvgOrderValue(purchaseHistories);
@@ -139,7 +139,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Metric getMetricsByCustomer(Integer customerId) {
-        Iterable<PurchaseHistory> specificCustomerPurchaseHistory = this.purchaseHistoryService
+        List<PurchaseHistory> specificCustomerPurchaseHistory = this.purchaseHistoryService
                 .findByCustomerId(customerId);
 
         double totalSalesAmount = this.purchaseHistoryService.getSalesTotal(specificCustomerPurchaseHistory);
