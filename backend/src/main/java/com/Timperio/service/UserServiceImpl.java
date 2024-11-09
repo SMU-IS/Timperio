@@ -6,14 +6,50 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import com.Timperio.enums.*;
 import com.Timperio.models.*;
+import com.Timperio.dto.*;
 import com.Timperio.repository.UserRepository;
 import com.Timperio.service.impl.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(
+        UserRepository userRepository,
+        PasswordEncoder passwordEncoder
+    ) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public User createUser(CreateUserDto input) {
+        User user;
+    
+        switch (input.getRole()) {
+            case ADMIN:
+                user = new AdminUser(); 
+                break;
+            case MARKETING:
+                user = new MarketingUser();
+                break;
+            case SALES:
+                user = new SalesUser();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid role: " + input.getRole());
+        }
+    
+        user.setName(input.getName());
+        user.setUserEmail(input.getUserEmail());
+        user.setPassword(passwordEncoder.encode(input.getPassword()));
+    
+        return userRepository.save(user);
+    }
 
     public List<User> findAll() {
         return userRepository.findAll();

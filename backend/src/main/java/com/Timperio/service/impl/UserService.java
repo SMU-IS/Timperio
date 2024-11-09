@@ -3,9 +3,12 @@ package com.Timperio.service.impl;
 import java.util.*;
 import com.Timperio.models.User;
 import com.Timperio.enums.*;
+import com.Timperio.dto.CreateUserDto;
 
 public interface UserService {
-    
+
+    public User createUser(CreateUserDto input);
+
     public List<User> findAll();
 
     public User findByUserId(Integer userId);
