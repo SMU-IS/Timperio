@@ -5,7 +5,7 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -44,14 +44,20 @@ public class UserController {
         return ResponseEntity.ok("User deleted successfully");
     }
 
-    // @PutMapping("/{userId}")
-    // public ResponseEntity<User> updateUser(@PathVariable String userEmail, @RequestBody UpdateUserDto updateUserDto, @AuthenticationPrincipal UserDetails currentUser) {
-    //     if (!userEmail.equals(currentUser.getUsername())) {
-    //         throw new AccessDeniedException("You can only update your own account");
-    //     }
-    //     User updatedUser = this.userService.updateUser(userEmail, updateUserDto);
-    //     return ResponseEntity.ok(updatedUser);
-    // }
+    @PutMapping("/{userId}")
+    public ResponseEntity<Object> updateUser(@PathVariable Integer userId, @RequestBody UpdateUserDto updateUserDto, @AuthenticationPrincipal(expression = "userId") Integer authenticatedUserId) {
+        if (!userId.equals(authenticatedUserId)) {
+            throw new AccessDeniedException("You can only update your own account");
+        }
+
+        try {
+            User updatedUser = this.userService.updateUser(userId, updateUserDto);
+            return ResponseEntity.ok(updatedUser);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/admin/{userId}")
@@ -59,6 +65,7 @@ public class UserController {
         try {
             User updatedUser = this.userService.updateUserAdmin(userId, updateUserDto);
             return ResponseEntity.ok(updatedUser);
+
         } catch (AdminAccountUpdateException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());  
         } catch (InvalidRoleException e) {
