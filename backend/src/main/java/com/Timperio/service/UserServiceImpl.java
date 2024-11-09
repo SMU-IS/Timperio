@@ -73,13 +73,39 @@ public class UserServiceImpl implements UserService {
         }
     };
 
-    public User updateUser(Integer userId, UpdateUserDto input) {
+    public User updateUserAdmin(Integer userId, UpdateUserAdminDto input) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
         
+        if (user.getRole() == Role.ADMIN) {
+            throw new AdminAccountUpdateException("User is an admin account. You cannot update user details.");
+        }
+
         if (input.getUserEmail() != null) {
             user.setUserEmail(input.getUserEmail());
         }
+        if (input.getName() != null) {
+            user.setName(input.getName());
+        }
+        if (input.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(input.getPassword()));
+        }
+
+        if (input.getRole() != null) {
+            try {
+                user.setRole(input.getRole());
+            } catch (IllegalArgumentException e) {
+                throw new InvalidRoleException("Invalid role: " + input.getRole());
+            }
+        }
+
+        return userRepository.save(user);
+    }
+
+    public User updateUser(Integer userId, UpdateUserDto input) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+
         if (input.getName() != null) {
             user.setName(input.getName());
         }

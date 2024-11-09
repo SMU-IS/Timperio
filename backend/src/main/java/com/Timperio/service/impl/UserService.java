@@ -15,6 +15,8 @@ public interface UserService {
 
     public User updateUser(Integer userId, UpdateUserDto input);
 
+    public User updateUserAdmin(Integer userId, UpdateUserAdminDto input);
+
     public List<User> findAll();
 
     public User findByUserId(Integer userId);

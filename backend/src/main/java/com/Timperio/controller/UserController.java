@@ -5,6 +5,8 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
@@ -12,6 +14,7 @@ import com.Timperio.enums.Role;
 import com.Timperio.models.User;
 import com.Timperio.service.impl.UserService;
 import com.Timperio.dto.*;
+import com.Timperio.exceptions.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -41,11 +44,28 @@ public class UserController {
         return ResponseEntity.ok("User deleted successfully");
     }
 
+    // @PutMapping("/{userId}")
+    // public ResponseEntity<User> updateUser(@PathVariable String userEmail, @RequestBody UpdateUserDto updateUserDto, @AuthenticationPrincipal UserDetails currentUser) {
+    //     if (!userEmail.equals(currentUser.getUsername())) {
+    //         throw new AccessDeniedException("You can only update your own account");
+    //     }
+    //     User updatedUser = this.userService.updateUser(userEmail, updateUserDto);
+    //     return ResponseEntity.ok(updatedUser);
+    // }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/{userId}")
-    public ResponseEntity<User> updateUser(@PathVariable Integer userId, @RequestBody UpdateUserDto updateUserDto) {
-        User updatedUser = this.userService.updateUser(userId, updateUserDto);
-        return ResponseEntity.ok(updatedUser);
+    @PutMapping("/admin/{userId}")
+    public ResponseEntity<Object> updateUserAdmin(@PathVariable Integer userId, @RequestBody UpdateUserAdminDto updateUserDto) {
+        try {
+            User updatedUser = this.userService.updateUserAdmin(userId, updateUserDto);
+            return ResponseEntity.ok(updatedUser);
+        } catch (AdminAccountUpdateException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());  
+        } catch (InvalidRoleException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @GetMapping()
