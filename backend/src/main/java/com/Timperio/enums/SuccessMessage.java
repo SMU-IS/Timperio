@@ -1,7 +1,8 @@
 package com.Timperio.enums;
 
 public enum SuccessMessage {
-    CUSTOMER_DB_POPULATED("CUSTOMER_DB_POPULATED");
+    CUSTOMER_DB_POPULATED("CUSTOMER_DB_POPULATED"),
+    USER_DELETED_SUCCESS("User deleted successfully");
 
     private final String successMsg;
 

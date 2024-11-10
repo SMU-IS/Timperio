@@ -7,7 +7,7 @@ import com.Timperio.dto.*;
 
 public interface UserService {
 
-    public User createUser(CreateUserDto input);
+    public User createUser(CreateUpdateUserAdminDto input);
 
     public void deleteUserById(Integer userId);
 
@@ -15,7 +15,7 @@ public interface UserService {
 
     public User updateUser(Integer userId, UpdateUserDto input);
 
-    public User updateUserAdmin(Integer userId, UpdateUserAdminDto input);
+    public User updateUserAdmin(Integer userId, CreateUpdateUserAdminDto input);
 
     public List<User> findAll();
 

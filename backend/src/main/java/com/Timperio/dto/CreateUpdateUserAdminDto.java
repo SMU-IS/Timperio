@@ -9,7 +9,7 @@ import com.Timperio.enums.*;
 @Data 
 @NoArgsConstructor 
 @AllArgsConstructor
-public class UpdateUserAdminDto {
+public class CreateUpdateUserAdminDto {
     private String userEmail;     
     private String password;   
     private String name;

@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User createUser(CreateUserDto input) {
+    public User createUser(CreateUpdateUserAdminDto input) {
         User user;
         
         switch (input.getRole()) {
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
                 user = new SalesUser();
                 break;
             default:
-                throw new IllegalArgumentException("Invalid role: " + input.getRole());
+                throw new InvalidRoleException("Invalid role: " + input.getRole());
         }
     
         user.setName(input.getName());
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
             userRepository.delete(user);
         } catch (Exception e) {
-            throw new RuntimeException("An unexpected error occurred while deleting the user.");
+            throw new RuntimeException(ErrorMessage.DELETE_USER_ERROR.getMessage());
         }
         
     };
@@ -69,16 +69,16 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userEmail));
             userRepository.delete(user);
         } catch (Exception e) {
-            throw new RuntimeException("An unexpected error occurred while deleting the user.");
+            throw new RuntimeException(ErrorMessage.DELETE_USER_ERROR.getMessage());
         }
     };
 
-    public User updateUserAdmin(Integer userId, UpdateUserAdminDto input) {
+    public User updateUserAdmin(Integer userId, CreateUpdateUserAdminDto input) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
         
         if (user.getRole() == Role.ADMIN) {
-            throw new AdminAccountUpdateException("User is an admin account. You cannot update user details.");
+            throw new AdminAccountUpdateException(ErrorMessage.ADMIN_ACCOUNT_UPDATE_ERROR.toString());
         }
 
         if (input.getUserEmail() != null) {

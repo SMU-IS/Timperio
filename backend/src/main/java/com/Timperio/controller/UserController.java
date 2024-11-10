@@ -10,7 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
-import com.Timperio.enums.Role;
+import com.Timperio.enums.*;
 import com.Timperio.models.User;
 import com.Timperio.service.impl.UserService;
 import com.Timperio.dto.*;
@@ -25,7 +25,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping()
-    public ResponseEntity<User> createUser(@RequestBody CreateUserDto createUserDto) {
+    public ResponseEntity<User> createUser(@RequestBody CreateUpdateUserAdminDto createUserDto) {
         User newUser = this.userService.createUser(createUserDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
@@ -34,20 +34,20 @@ public class UserController {
     @DeleteMapping("/id/{userId}")
     public ResponseEntity<String> deleteUserById(@PathVariable Integer userId) {
         this.userService.deleteUserById(userId);
-        return ResponseEntity.ok("User deleted successfully");
+        return ResponseEntity.ok(SuccessMessage.USER_DELETED_SUCCESS.toString());
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/email/{userEmail}")
     public ResponseEntity<String> deleteUserByEmail(@PathVariable String userEmail) {
         this.userService.deleteUserByEmail(userEmail);
-        return ResponseEntity.ok("User deleted successfully");
+        return ResponseEntity.ok(SuccessMessage.USER_DELETED_SUCCESS.toString());
     }
 
     @PutMapping("/{userId}")
     public ResponseEntity<Object> updateUser(@PathVariable Integer userId, @RequestBody UpdateUserDto updateUserDto, @AuthenticationPrincipal(expression = "userId") Integer authenticatedUserId) {
         if (!userId.equals(authenticatedUserId)) {
-            throw new AccessDeniedException("You can only update your own account");
+            throw new AccessDeniedException(ErrorMessage.UPDATE_USER_ACCESS_DENIED.getMessage());
         }
 
         try {
@@ -61,7 +61,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/admin/{userId}")
-    public ResponseEntity<Object> updateUserAdmin(@PathVariable Integer userId, @RequestBody UpdateUserAdminDto updateUserDto) {
+    public ResponseEntity<Object> updateUserAdmin(@PathVariable Integer userId, @RequestBody CreateUpdateUserAdminDto updateUserDto) {
         try {
             User updatedUser = this.userService.updateUserAdmin(userId, updateUserDto);
             return ResponseEntity.ok(updatedUser);
