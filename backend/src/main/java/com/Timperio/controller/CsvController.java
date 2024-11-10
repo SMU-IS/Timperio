@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Timperio.enums.SalesType;
 import com.Timperio.service.impl.PurchaseHistoryExportService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,8 +19,9 @@ public class CsvController {
 
     @GetMapping
     public void exportPurchaseHistoryToCsv(@RequestParam(required = false) Integer customerId,
+            @RequestParam(required = false) SalesType salesType,
             HttpServletResponse response) throws Exception {
-        this.purchaseHistoryExportService.writePurchaseHistoriesToCsv(customerId, response);
+        this.purchaseHistoryExportService.writePurchaseHistoriesToCsv(customerId, salesType, response);
     }
 
 }

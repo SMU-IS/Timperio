@@ -26,8 +26,8 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
     }
 
     @Override
-    public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(Integer customerId) {
-        return purchaseHistoryRepository.findAllFilteredPurchaseHistories(customerId);
+    public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(Integer customerId, SalesType salesType) {
+        return purchaseHistoryRepository.findAllFilteredPurchaseHistories(customerId, salesType);
     }
 
     @Override
