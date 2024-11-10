@@ -24,8 +24,9 @@ public class PurchaseHistoryController {
     private PurchaseHistoryService purchaseHistoryService;
 
     @GetMapping()
-    public List<PurchaseHistoryDto> getAllSalesData(@RequestParam(required = false) Integer customerId) {
-        return this.purchaseHistoryService.findAllFilteredPurchaseHistories(customerId);
+    public List<PurchaseHistoryDto> getAllSalesData(@RequestParam(required = false) Integer customerId,
+            @RequestParam(required = false) SalesType salesType) {
+        return this.purchaseHistoryService.findAllFilteredPurchaseHistories(customerId, salesType);
     }
 
     @GetMapping("/customerId/{customerId}")

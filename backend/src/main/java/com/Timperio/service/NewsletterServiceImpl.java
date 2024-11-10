@@ -1,23 +1,20 @@
 package com.Timperio.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.Timperio.config.MailChimpConstant;
+import com.Timperio.dto.NewsletterCampaignContentDTO;
+import com.Timperio.dto.NewsletterRequestDTO;
 import com.Timperio.service.impl.NewsletterService;
 
 import lombok.AllArgsConstructor;
-
-import org.apache.catalina.connector.Response;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.MediaType;
-
-import com.Timperio.dto.NewsletterCampaignContentDTO;
-import com.Timperio.dto.NewsletterRequestDTO;
-import com.Timperio.dto.NewsletterResponseDTO;
-import com.Timperio.config.MailChimpConstant;
 
 @Service
 @AllArgsConstructor
