@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
         
         if (user.getRole() == Role.ADMIN) {
-            throw new AdminAccountUpdateException(ErrorMessage.ADMIN_ACCOUNT_UPDATE_ERROR.toString());
+            throw new AdminAccountUpdateException(ErrorMessage.ADMIN_ACCOUNT_UPDATE_ERROR.getMessage());
         }
 
         if (input.getUserEmail() != null) {
