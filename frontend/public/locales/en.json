@@ -288,7 +288,8 @@
         "CONSIGNMENT": "Consignment",
         "DIRECT_B2B": "DIRECT_B2B",
         "MARKETING": "MARKETING",
-        "DIRECT_B2C": "DIRECT_B2C"
+        "DIRECT_B2C": "DIRECT_B2C",
+        "WHOLESALER": "WHOLESALER"
       }
     },
     "recentOrders": {
@@ -306,7 +307,8 @@
       "CONSIGNMENT": "Consignment",
       "DIRECT_B2B": "DIRECT_B2B",
       "MARKETING": "MARKETING",
-      "DIRECT_B2C": "DIRECT_B2C"
+      "DIRECT_B2C": "DIRECT_B2C",
+      "WHOLESALER": "WHOLESALER"
     }
   },
   "orders": {
@@ -344,9 +346,9 @@
         "label": "Search",
         "placeholder": "Order Number, User, etc."
       },
-      "status": {
-        "label": "Status",
-        "placeholder": "Order Status"
+      "salestype": {
+        "label": "SalesType",
+        "placeholder": "Sales Type"
       },
       "store": {
         "label": "Store",
@@ -363,9 +365,9 @@
       "createdAt": {
         "label": "Created At"
       },
-      "orderNumber": {
-        "label": "Order Number",
-        "placeholder": "Search Order Number"
+      "orderId": {
+        "label": "Order ID",
+        "placeholder": "Search Order ID"
       },
       "submit": "Filter"
     },

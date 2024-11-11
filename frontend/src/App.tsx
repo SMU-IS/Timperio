@@ -52,7 +52,7 @@ const App: React.FC = () => {
   // We use this hook to skip the login page and demonstrate the application more quickly.
   const { loading } = useAutoLoginForDemo();
 
-  const API_URL = 'http://localhost:8080/api/v1'; // Update API URL
+  const API_URL = ''; // Update API URL
   const dataProvider = jsonServerDataProvider(API_URL);
 
   const { t, i18n } = useTranslation();
@@ -92,7 +92,7 @@ const App: React.FC = () => {
                 },
               },
               {
-                name: 'purchaseHistory', // Change name from orders to purchaseHistory
+                name: 'orders', // Change name from orders to purchaseHistory
                 list: '/purchaseHistory', // Update list route
                 show: '/purchaseHistory/:id', // Update show route
                 meta: {
@@ -174,7 +174,7 @@ const App: React.FC = () => {
               >
                 <Route index element={<DashboardPage />} />
 
-                <Route path="/orders">
+                <Route path="/purchaseHistory">
                   <Route index element={<OrderList />} />
                   <Route path=":id" element={<OrderShow />} />
                 </Route>

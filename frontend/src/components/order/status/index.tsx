@@ -9,7 +9,12 @@ import { Tag } from 'antd';
 import { BikeIcon, BikeWhiteIcon } from '../../icons';
 
 type OrderStatusProps = {
-  status: 'DIRECT_B2C' | 'DIRECT_B2B' | 'MARKETING' | 'CONSIGNMENT';
+  status:
+    | 'DIRECT_B2C'
+    | 'DIRECT_B2B'
+    | 'MARKETING'
+    | 'CONSIGNMENT'
+    | 'WHOLESALER';
 };
 
 export const OrderStatus: React.FC<OrderStatusProps> = ({ status }) => {
@@ -35,6 +40,11 @@ export const OrderStatus: React.FC<OrderStatusProps> = ({ status }) => {
       break;
     case 'DIRECT_B2B':
       color = 'green';
+      // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
+      icon = <CheckCircleOutlined />;
+      break;
+    case 'WHOLESALER':
+      color = 'pink';
       // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
       icon = <CheckCircleOutlined />;
       break;

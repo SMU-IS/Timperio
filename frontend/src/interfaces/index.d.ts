@@ -23,7 +23,12 @@ export interface ISalesChart {
 
 export interface IOrderSalesType {
   id: number;
-  text: 'Online' | 'In-Store' | 'Pickup';
+  salesType:
+    | 'CONSIGNMENT'
+    | 'DIRECT_B2B'
+    | 'MARKETING'
+    | 'DIRECT_B2C'
+    | 'WHOLESALER';
 }
 
 export interface IUser {
@@ -141,6 +146,10 @@ export interface IOrderFilterVariables {
   user?: string;
   createdAt?: [Dayjs, Dayjs];
   salesType?: string; // Updated field
+  salesId?: string;
+  customerId?: string;
+  salesType?: string[];
+  salesDate?: [string, string];
 }
 
 export interface IUserFilterVariables {
