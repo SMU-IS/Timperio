@@ -1,5 +1,7 @@
 package com.Timperio.controller;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +27,10 @@ public class PurchaseHistoryController {
 
     @GetMapping()
     public List<PurchaseHistoryDto> getAllSalesData(@RequestParam(required = false) Integer customerId,
-            @RequestParam(required = false) SalesType salesType) {
-        return this.purchaseHistoryService.findAllFilteredPurchaseHistories(customerId, salesType);
+            @RequestParam(required = false) SalesType salesType, LocalDate salesDate, BigDecimal minPrice,
+            BigDecimal maxPrice) {
+        return this.purchaseHistoryService.findAllFilteredPurchaseHistories(customerId, salesType, salesDate, minPrice,
+                maxPrice);
     }
 
     @GetMapping("/customerId/{customerId}")
