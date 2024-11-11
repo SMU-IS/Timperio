@@ -1,5 +1,6 @@
 package com.Timperio.service.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.Timperio.dto.PurchaseHistoryDto;
@@ -11,7 +12,8 @@ import com.Timperio.models.PurchaseHistory;
 public interface PurchaseHistoryService {
     public List<PurchaseHistory> findAll();
 
-    public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(Integer customerId, SalesType salesType);
+    public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(Integer customerId, SalesType salesType,
+            LocalDate salesDate);
 
     public List<PurchaseHistory> findByCustomerId(Integer id);
 

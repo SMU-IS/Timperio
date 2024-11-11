@@ -1,5 +1,6 @@
 package com.Timperio.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ public class PurchaseHistoryController {
 
     @GetMapping()
     public List<PurchaseHistoryDto> getAllSalesData(@RequestParam(required = false) Integer customerId,
-            @RequestParam(required = false) SalesType salesType) {
-        return this.purchaseHistoryService.findAllFilteredPurchaseHistories(customerId, salesType);
+            @RequestParam(required = false) SalesType salesType, LocalDate salesDate) {
+        return this.purchaseHistoryService.findAllFilteredPurchaseHistories(customerId, salesType, salesDate);
     }
 
     @GetMapping("/customerId/{customerId}")

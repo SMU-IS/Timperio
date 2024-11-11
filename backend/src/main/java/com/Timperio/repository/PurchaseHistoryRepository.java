@@ -1,5 +1,6 @@
 package com.Timperio.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -21,10 +22,12 @@ public interface PurchaseHistoryRepository extends CrudRepository<PurchaseHistor
     @Query("SELECT new com.Timperio.dto.PurchaseHistoryDto(p.customer.customerId, p.salesType, p.totalPrice, p.salesDate) "
             + "FROM PurchaseHistory p "
             + "WHERE (:customerId IS NULL OR p.customer.customerId = :#{#customerId}) "
-            + "AND (:salesType IS NULL OR p.salesType = :#{#salesType})")
+            + "AND (:salesType IS NULL OR p.salesType = :#{#salesType})"
+            + "AND ((cast(:salesDate as DATE) is NULL) OR p.salesDate = :#{#salesDate})")
     List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(
             @Param("customerId") Integer customerId,
-            @Param("salesType") SalesType salesType);
+            @Param("salesType") SalesType salesType,
+            @Param("salesDate") LocalDate salesDate);
 
     List<PurchaseHistory> findByCustomer_CustomerId(Integer customerId);
 
