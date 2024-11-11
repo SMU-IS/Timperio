@@ -34,6 +34,9 @@
    DB_USERNAME=postgres
    DB_PASSWORD=root
    PYTHON_DB_URL=postgresql://postgres:root@localhost:5432/timperiodb
+   JWT_SECRET_KEY={JWT_SECRET_KEY}
+   SERVER=//localhost:5173
+   MAILCHIMP_API_KEY={MAILCHIMP_API_KEY}
    ```
 
 4. Run the project in development environment
@@ -42,6 +45,12 @@
    frontend - npm run dev
    backend - mvn spring-boot:run
    ```
+
+## API Documentation
+
+```
+http://localhost:8080/swagger-ui/index.html
+```
 
 ## Acknowledgements
 
