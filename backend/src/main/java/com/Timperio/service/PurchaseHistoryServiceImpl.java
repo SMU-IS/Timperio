@@ -1,5 +1,6 @@
 package com.Timperio.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -28,8 +29,9 @@ public class PurchaseHistoryServiceImpl implements PurchaseHistoryService {
 
     @Override
     public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(Integer customerId, SalesType salesType,
-            LocalDate salesDate) {
-        return purchaseHistoryRepository.findAllFilteredPurchaseHistories(customerId, salesType, salesDate);
+            LocalDate salesDate, BigDecimal minPrice, BigDecimal maxPrice) {
+        return purchaseHistoryRepository.findAllFilteredPurchaseHistories(customerId, salesType, salesDate, minPrice,
+                maxPrice);
     }
 
     @Override

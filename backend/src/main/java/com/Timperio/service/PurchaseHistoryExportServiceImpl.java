@@ -1,6 +1,7 @@
 package com.Timperio.service;
 
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,11 +25,12 @@ public class PurchaseHistoryExportServiceImpl implements PurchaseHistoryExportSe
 
     @Override
     public void writePurchaseHistoriesToCsv(Integer customerId, SalesType salesType, LocalDate salesDate,
+            BigDecimal minPrice, BigDecimal maxPrice,
             HttpServletResponse response)
             throws Exception {
 
         List<PurchaseHistoryDto> purchaseHistories = this.purchaseHistoryService
-                .findAllFilteredPurchaseHistories(customerId, salesType, salesDate);
+                .findAllFilteredPurchaseHistories(customerId, salesType, salesDate, minPrice, maxPrice);
 
         response.setContentType("text/csv");
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"purchase_history.csv\"");

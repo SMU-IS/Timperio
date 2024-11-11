@@ -1,5 +1,6 @@
 package com.Timperio.controller;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,11 @@ public class CsvController {
     public void exportPurchaseHistoryToCsv(@RequestParam(required = false) Integer customerId,
             @RequestParam(required = false) SalesType salesType,
             @RequestParam(required = false) LocalDate salesDate,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
             HttpServletResponse response) throws Exception {
-        this.purchaseHistoryExportService.writePurchaseHistoriesToCsv(customerId, salesType, salesDate, response);
+        this.purchaseHistoryExportService.writePurchaseHistoriesToCsv(customerId, salesType, salesDate,
+                minPrice, maxPrice, response);
     }
 
 }

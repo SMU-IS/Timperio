@@ -1,5 +1,6 @@
 package com.Timperio.repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,11 +24,15 @@ public interface PurchaseHistoryRepository extends CrudRepository<PurchaseHistor
             + "FROM PurchaseHistory p "
             + "WHERE (:customerId IS NULL OR p.customer.customerId = :#{#customerId}) "
             + "AND (:salesType IS NULL OR p.salesType = :#{#salesType})"
-            + "AND ((cast(:salesDate as DATE) is NULL) OR p.salesDate = :#{#salesDate})")
+            + "AND (:salesDate IS NULL OR p.salesDate = :#{#salesDate})"
+            + "AND (:minPrice IS NULL OR p.totalPrice >= :#{#minPrice})"
+            + "AND (:maxPrice IS NULL OR p.totalPrice <= :#{#maxPrice})")
     List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(
             @Param("customerId") Integer customerId,
             @Param("salesType") SalesType salesType,
-            @Param("salesDate") LocalDate salesDate);
+            @Param("salesDate") LocalDate salesDate,
+            @Param("minPrice") BigDecimal minPrice,
+            @Param("maxPrice") BigDecimal maxPrice);
 
     List<PurchaseHistory> findByCustomer_CustomerId(Integer customerId);
 
