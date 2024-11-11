@@ -1,21 +1,21 @@
-import { useList, useNavigation } from "@refinedev/core";
+import { useList, useNavigation } from '@refinedev/core';
 
-import { Map, MapMarker } from "../..";
-import type { IOrder } from "../../../interfaces";
+import { Map, MapMarker } from '../..';
+import type { IOrder } from '../../../interfaces';
 
 export const AllOrdersMap: React.FC = () => {
   const { data: orderData } = useList<IOrder>({
-    resource: "orders",
+    resource: 'orders',
     config: {
       filters: [
         {
-          field: "status.text",
-          operator: "eq",
-          value: "On The Way",
+          field: 'status.text',
+          operator: 'eq',
+          value: 'On The Way',
         },
       ],
       pagination: {
-        mode: "off",
+        mode: 'off',
       },
     },
   });
@@ -36,9 +36,9 @@ export const AllOrdersMap: React.FC = () => {
         return (
           <MapMarker
             key={order.id}
-            onClick={() => show("orders", order.id)}
+            onClick={() => show('orders', order.id)}
             icon={{
-              url: "/images/marker-courier.svg",
+              url: '/images/marker-courier.svg',
             }}
             position={{
               lat: Number(order.adress.coordinate[0]),
@@ -51,9 +51,9 @@ export const AllOrdersMap: React.FC = () => {
         return (
           <MapMarker
             key={order.id}
-            onClick={() => show("orders", order.id)}
+            onClick={() => show('orders', order.id)}
             icon={{
-              url: "/images/marker-customer.svg",
+              url: '/images/marker-customer.svg',
             }}
             position={{
               lat: Number(order.store.address.coordinate[0]),

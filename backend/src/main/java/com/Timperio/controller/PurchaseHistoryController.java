@@ -28,6 +28,7 @@ public class PurchaseHistoryController {
     @Autowired
     private PurchaseHistoryService purchaseHistoryService;
 
+    @CrossOrigin(origins = "http://localhost:5174")
     @GetMapping()
     public List<PurchaseHistoryDto> getAllSalesData(@RequestParam(required = false) Integer customerId,
             @RequestParam(required = false) SalesType salesType, LocalDate salesDate, BigDecimal minPrice,

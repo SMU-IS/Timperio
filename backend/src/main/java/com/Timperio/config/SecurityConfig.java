@@ -48,11 +48,12 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers(("/swagger-ui/**")).permitAll()
                         .requestMatchers(("/api/v1/customers/populateCustomerDb")).permitAll()
-                        .requestMatchers("/api/v1/purchaseHistory")
-                        .hasAnyRole(Role.MARKETING.toString(), Role.SALES.toString())
+                        .requestMatchers("/api/v1/purchaseHistory").permitAll()
+                        // .hasAnyRole(Role.MARKETING.toString(), Role.SALES.toString())
                         .requestMatchers("/api/v1/export")
                         .hasRole(Role.MARKETING.toString())
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
+                        // .anyRequest().authenticated())
 
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedHandler(customAccessDeniedHandler())
