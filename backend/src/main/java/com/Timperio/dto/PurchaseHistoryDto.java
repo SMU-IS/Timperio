@@ -13,7 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 public class PurchaseHistoryDto {
+    private Integer salesId;
     private Integer customerId;
+    private String product;
     private SalesType salesType;
     private Double totalPrice;
     private LocalDate salesDate;
