@@ -38,11 +38,11 @@ jobs:
           cd timperio-deployment
           if [ -z "$(ls -A)" ]; then
             git remote add origin "$DEPLOY_REPO"
-            git branch -M master
+            git branch -M main
             touch .gitkeep
             git add .gitkeep
             git commit -m "Initial commit"
-            git push -u origin master
+            git push -u origin main
           else
             find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
           fi
@@ -51,6 +51,6 @@ jobs:
           cd timperio-deployment
           git add .
           git diff --staged --quiet || git commit -m "${{ steps.get_commit_message.outputs.commit_message }}"
-          git push origin master --force || echo "No changes to push"
+          git push origin main --force || echo "No changes to push"
         env:
           DEPLOY_BACKEND_PAT: ${{ secrets.DEPLOY_BACKEND_PAT }}
