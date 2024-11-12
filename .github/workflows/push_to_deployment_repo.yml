@@ -32,7 +32,7 @@ jobs:
         run: |
           set -e
           git config --global user.name "joshydavid"
-          git config --global user.email "joshydavidang@outlook.sg"
+          git config --global user.email "joshuadavidang@outlook.sg"
           DEPLOY_REPO="https://x-access-token:${{ secrets.DEPLOY_BACKEND_PAT }}@github.com/joshydavid/timperio-deployment.git"
           git clone "$DEPLOY_REPO" timperio-deployment
           cd timperio-deployment
