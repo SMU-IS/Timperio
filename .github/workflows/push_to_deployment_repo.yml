@@ -31,30 +31,26 @@ jobs:
       - name: Copy to deployment repo
         run: |
           set -e
-
-          # Configure Git
           git config --global user.name "joshydavid"
           git config --global user.email "joshydavidang@outlook.sg"
-
           DEPLOY_REPO="https://x-access-token:${{ secrets.DEPLOY_BACKEND_PAT }}@github.com/joshydavid/timperio-deployment.git"
           git clone "$DEPLOY_REPO" timperio-deployment
-
           cd timperio-deployment
-
           if [ -z "$(ls -A)" ]; then
-            echo "Repository is empty. Initializing..."
+            git remote add origin "$DEPLOY_REPO"
+            git branch -M master
+            touch .gitkeep
+            git add .gitkeep
+            git commit -m "Initial commit"
+            git push -u origin master
           else
-            echo "Repository is not empty. Cleaning up existing files..."
             find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
           fi
-
           cd ../
           rsync -av --exclude='.git' --exclude='.github' . ./timperio-deployment/
-
-          # Commit and push changes
           cd timperio-deployment
           git add .
           git diff --staged --quiet || git commit -m "${{ steps.get_commit_message.outputs.commit_message }}"
-          git push origin master --force || echo "No changes to push"
+          git push origin main --force || echo "No changes to push"
         env:
-          DEPLOY_PAT: ${{ secrets.DEPLOY_BACKEND_PAT }}
+          DEPLOY_BACKEND_PAT: ${{ secrets.DEPLOY_BACKEND_PAT }}
