@@ -30,7 +30,7 @@ import { DashboardPage } from './pages/dashboard';
 import { OrderList, OrderShow } from './pages/orders';
 import { AuthPage } from './pages/auth';
 import { CustomerShow, CustomerList } from './pages/customers';
-import { CourierList, CourierCreate, CourierEdit } from './pages/couriers';
+import { UserManagement, CourierCreate, CourierEdit } from './pages/couriers';
 import {
   ProductList,
   ProductCreate,
@@ -109,41 +109,41 @@ const App: React.FC = () => {
                   icon: <UserOutlined />,
                 },
               },
+              // {
+              //   name: 'products',
+              //   list: '/products',
+              //   create: '/products/new',
+              //   edit: '/products/:id/edit',
+              //   show: '/products/:id',
+              //   meta: {
+              //     // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
+              //     icon: <UnorderedListOutlined />,
+              //   },
+              // },
+              // {
+              //   name: 'categories',
+              //   list: '/categories',
+              //   meta: {
+              //     // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
+              //     icon: <TagsOutlined />,
+              //   },
+              // },
+              // {
+              //   name: 'stores',
+              //   list: '/stores',
+              //   create: '/stores/new',
+              //   edit: '/stores/:id/edit',
+              //   meta: {
+              //     // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
+              //     icon: <ShopOutlined />,
+              //   },
+              // },
               {
-                name: 'products',
-                list: '/products',
-                create: '/products/new',
-                edit: '/products/:id/edit',
-                show: '/products/:id',
-                meta: {
-                  // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-                  icon: <UnorderedListOutlined />,
-                },
-              },
-              {
-                name: 'categories',
-                list: '/categories',
-                meta: {
-                  // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-                  icon: <TagsOutlined />,
-                },
-              },
-              {
-                name: 'stores',
-                list: '/stores',
-                create: '/stores/new',
-                edit: '/stores/:id/edit',
-                meta: {
-                  // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-                  icon: <ShopOutlined />,
-                },
-              },
-              {
-                name: 'couriers',
-                list: '/couriers',
-                create: '/couriers/new',
-                edit: '/couriers/:id/edit',
-                show: '/couriers/:id',
+                name: 'UserManagement',
+                list: '/UserManagement',
+                create: '/UserManagement/new',
+                edit: '/UserManagement/:id/edit',
+                show: '/UserManagement/:id',
                 meta: {
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
                   icon: <BikeWhiteIcon />,
@@ -190,7 +190,7 @@ const App: React.FC = () => {
                   <Route path=":id" element={<CustomerShow />} />
                 </Route>
 
-                <Route
+                {/* <Route
                   path="/products"
                   element={
                     <ProductList>
@@ -201,23 +201,23 @@ const App: React.FC = () => {
                   <Route path="new" element={<ProductCreate />} />
                   <Route path=":id" element={<ProductShow />} />
                   <Route path=":id/edit" element={<ProductEdit />} />
-                </Route>
+                </Route> */}
 
-                <Route path="/stores">
+                {/* <Route path="/stores">
                   <Route index element={<StoreList />} />
                   <Route path="new" element={<StoreCreate />} />
                   <Route path=":id/edit" element={<StoreEdit />} />
-                </Route>
+                </Route> */}
 
-                <Route path="/categories" element={<CategoryList />} />
+                {/* <Route path="/categories" element={<CategoryList />} /> */}
 
-                <Route path="/couriers">
+                <Route path="/UserManagement">
                   <Route
                     path=""
                     element={
-                      <CourierList>
+                      <UserManagement>
                         <Outlet />
-                      </CourierList>
+                      </UserManagement>
                     }
                   >
                     <Route path="new" element={<CourierCreate />} />
@@ -241,8 +241,8 @@ const App: React.FC = () => {
                       type="login"
                       formProps={{
                         initialValues: {
-                          email: 'demo@refine.dev',
-                          password: 'demodemo',
+                          email: 'admin@timperio.com',
+                          password: 'password123',
                         },
                       }}
                     />
@@ -255,7 +255,7 @@ const App: React.FC = () => {
                       type="register"
                       formProps={{
                         initialValues: {
-                          email: 'demo@refine.dev',
+                          email: '',
                           password: 'demodemo',
                         },
                       }}

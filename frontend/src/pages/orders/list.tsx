@@ -33,7 +33,11 @@ export const OrderList = () => {
         url += `/${filterType}/${filterValue}`;
       }
 
-      const response = await axios.get(url);
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token_timperio')}`,
+        },
+      });
       setData(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
