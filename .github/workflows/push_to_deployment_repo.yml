@@ -51,6 +51,6 @@ jobs:
           cd timperio-deployment
           git add .
           git diff --staged --quiet || git commit -m "${{ steps.get_commit_message.outputs.commit_message }}"
-          git push origin main --force || echo "No changes to push"
+          git push origin master --force || echo "No changes to push"
         env:
           DEPLOY_BACKEND_PAT: ${{ secrets.DEPLOY_BACKEND_PAT }}
