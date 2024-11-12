@@ -6,9 +6,10 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Java CI with Maven
+name: Java CI with Maven (Backend)
 
 on:
+  workflow_call:
   push:
     branches: [ "master" ]
   pull_request:
@@ -16,7 +17,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:

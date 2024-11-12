@@ -1,0 +1,56 @@
+name: Deploy to Timperio Deployment Repository
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  merged_backend:
+    uses: ./.github/workflows/merged_backend.yml
+
+  deploy:
+    needs:
+      - merged_backend
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4.2.1
+        with:
+          fetch-depth: 0
+
+      - name: Get latest commit message
+        id: get_commit_message
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "commit_message<<EOF" >> $GITHUB_OUTPUT
+          echo "$COMMIT_MSG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Copy to deployment repo
+        run: |
+          set -e
+          git config --global user.name "joshydavid"
+          git config --global user.email "cxang.2022@scis.smu.edu.sg"
+          DEPLOY_REPO="https://x-access-token:${{ secrets.DEPLOY_BACKEND_PAT }}@github.com/joshydavid/timperio-deployment.git"
+          git clone "$DEPLOY_REPO" timperio-deployment
+          cd timperio-deployment
+          if [ -z "$(ls -A)" ]; then
+            git remote add origin "$DEPLOY_REPO"
+            git branch -M main
+            touch .gitkeep
+            git add .gitkeep
+            git commit -m "Initial commit"
+            git push -u origin main
+          else
+            find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          fi
+          cd ../
+          rsync -av --exclude='.git' --exclude='.github' . ./timperio-deployment/
+          cd timperio-deployment
+          git add .
+          git diff --staged --quiet || git commit -m "${{ steps.get_commit_message.outputs.commit_message }}"
+          git push origin main --force || echo "No changes to push"
+        env:
+          DEPLOY_BACKEND_PAT: ${{ secrets.DEPLOY_BACKEND_PAT }}

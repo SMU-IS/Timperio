@@ -1,5 +1,7 @@
 package com.Timperio.service.impl;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import com.Timperio.dto.PurchaseHistoryDto;
@@ -11,7 +13,8 @@ import com.Timperio.models.PurchaseHistory;
 public interface PurchaseHistoryService {
     public List<PurchaseHistory> findAll();
 
-    public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(Integer customerId);
+    public List<PurchaseHistoryDto> findAllFilteredPurchaseHistories(Integer customerId, SalesType salesType,
+            LocalDate salesDate, BigDecimal minPrice, BigDecimal maxPrice);
 
     public List<PurchaseHistory> findByCustomerId(Integer id);
 
@@ -21,7 +24,6 @@ public interface PurchaseHistoryService {
 
     public List<PurchaseHistory> findByShippingMethod(ShippingMethod shippingMethod);
 
-    // Utils - Parse in Customer Purchase History as param
     public int getSalesCount(List<PurchaseHistory> purchaseHistoryList);
 
     public double getSalesTotal(List<PurchaseHistory> purchaseHistoryList);
