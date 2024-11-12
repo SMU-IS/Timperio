@@ -2,6 +2,7 @@ import type { AuthProvider } from '@refinedev/core';
 import axios from 'axios';
 import { notification } from 'antd';
 import { disableAutoLogin, enableAutoLogin } from './hooks';
+import exp from 'constants';
 
 export const TOKEN_KEY = 'token_timperio';
 export const EXPIRES_IN_KEY = 'token_expiry';
@@ -11,19 +12,6 @@ let loggedInEmail: string;
 
 export const authProvider: AuthProvider = {
   login: async ({ email, password }) => {
-    const token = localStorage.getItem(TOKEN_KEY);
-    const expiry = localStorage.getItem(EXPIRES_IN_KEY);
-
-    // Check if token exists and is still valid
-    if (token && expiry && Date.now() < parseInt(expiry)) {
-      // notification.info({
-      //   message: 'Already Logged In',
-      //   description: 'You are already logged in.',
-      // });
-      startLogoutTimer(parseInt(expiry) - Date.now());
-      return { success: true, redirectTo: '/' };
-    }
-
     // If no valid session, proceed with login API call
     try {
       enableAutoLogin();
@@ -57,12 +45,6 @@ export const authProvider: AuthProvider = {
         redirectTo: '/',
       };
     } catch (error) {
-      notification.error({
-        message: 'Login Failed',
-        description:
-          error.response?.data?.message || 'Please check your credentials.',
-      });
-
       return {
         success: false,
         error: {
@@ -88,11 +70,14 @@ export const authProvider: AuthProvider = {
   check: async () => {
     const token = localStorage.getItem(TOKEN_KEY);
     const expiry = localStorage.getItem(EXPIRES_IN_KEY);
-
-    if (token && expiry && Date.now() < parseInt(expiry)) {
-      const remainingTime = parseInt(expiry) - Date.now();
-      startLogoutTimer(remainingTime);
-      return { authenticated: true };
+    if (token){
+      if (expiry && Date.now() < parseInt(expiry)) {
+        const remainingTime = parseInt(expiry) - Date.now();
+        startLogoutTimer(remainingTime);
+        return { authenticated: true };
+      }else{
+        startLogoutTimer(0);
+      }
     }
 
     return {
