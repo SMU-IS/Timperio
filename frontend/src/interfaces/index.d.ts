@@ -1,13 +1,13 @@
-import type { Dayjs } from "dayjs";
+import type { Dayjs } from 'dayjs';
 
 export interface IOrderChart {
   count: number;
   status:
-    | "waiting"
-    | "ready"
-    | "on the way"
-    | "delivered"
-    | "could not be delivered";
+    | 'waiting'
+    | 'ready'
+    | 'on the way'
+    | 'delivered'
+    | 'could not be delivered';
 }
 
 export interface IOrderTotalCount {
@@ -17,13 +17,18 @@ export interface IOrderTotalCount {
 
 export interface ISalesChart {
   date: string;
-  title?: "Order Count" | "Order Amount";
+  title?: 'Order Count' | 'Order Amount';
   value: number;
 }
 
-export interface IOrderStatus {
+export interface IOrderSalesType {
   id: number;
-  text: "Pending" | "Ready" | "On The Way" | "Delivered" | "Cancelled";
+  salesType:
+    | 'CONSIGNMENT'
+    | 'DIRECT_B2B'
+    | 'MARKETING'
+    | 'DIRECT_B2C'
+    | 'WHOLESALER';
 }
 
 export interface IUser {
@@ -37,6 +42,7 @@ export interface IUser {
   isActive: boolean;
   avatar: IFile[];
   addresses: IAddress[];
+  purchaseHistory: ISalesChart[];
 }
 
 export interface IIdentity {
@@ -54,7 +60,7 @@ export interface IFile {
   name: string;
   percent: number;
   size: number;
-  status: "error" | "success" | "done" | "uploading" | "removed";
+  status: 'error' | 'success' | 'done' | 'uploading' | 'removed';
   type: string;
   uid: string;
   url: string;
@@ -78,10 +84,11 @@ export interface IStore {
 
 export interface ICourierStatus {
   id: number;
-  text: "Available" | "Offline" | "On delivery";
+  text: 'Available' | 'Offline' | 'On delivery';
 }
 
 export interface ICourier {
+  userId: any;
   id: number;
   name: string;
   surname: string;
@@ -99,18 +106,31 @@ export interface ICourier {
 }
 
 export interface IOrder {
-  id: number;
-  user: IUser;
-  createdAt: string;
-  products: IProduct[];
-  status: IOrderStatus;
-  adress: IAddress;
-  store: IStore;
-  courier: ICourier;
-  events: IEvent[];
-  orderNumber: number;
-  amount: number;
-}
+    salesId: number;
+    salesDate: string;
+    salesType: string;
+    channelType: string;
+    customerId: number;
+    zipCode: number;
+    shippingMethod: string;
+    product: string;
+    unitPrice: number;
+    variant: number;
+    quantity: number;
+    totalPrice: number;
+    orderNumber: number;
+    record: any;
+    status: any;
+    id: any;
+    products: any;
+    user: any;
+    createdAt: any
+    courier: any
+    store: any
+    events: any
+    adress: any
+  }
+
 
 export interface IProduct {
   id: number;
@@ -138,7 +158,11 @@ export interface IOrderFilterVariables {
   store?: string;
   user?: string;
   createdAt?: [Dayjs, Dayjs];
-  status?: string;
+  salesType?: string; // Updated field
+  salesId?: string;
+  customerId?: string;
+  salesType?: string[];
+  salesDate?: [string, string];
 }
 
 export interface IUserFilterVariables {
@@ -155,7 +179,7 @@ export interface IReview {
   user: IUser;
   star: number;
   createDate: string;
-  status: "pending" | "approved" | "rejected";
+  status: 'pending' | 'approved' | 'rejected';
   comment: string[];
 }
 

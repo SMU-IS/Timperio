@@ -1,49 +1,38 @@
-import React from "react";
-import { Authenticated, Refine } from "@refinedev/core";
-import { RefineKbarProvider, RefineKbar } from "@refinedev/kbar";
 import {
-  useNotificationProvider,
-  ThemedLayoutV2,
+  DashboardOutlined,
+  ShoppingOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import {
   ErrorComponent,
+  ThemedLayoutV2,
+  useNotificationProvider,
 } from "@refinedev/antd";
+import { Authenticated, Refine } from "@refinedev/core";
+import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import routerProvider, {
   CatchAllNavigate,
+  DocumentTitleHandler,
   NavigateToResource,
   UnsavedChangesNotifier,
-  DocumentTitleHandler,
 } from "@refinedev/react-router-v6";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
-import {
-  ShoppingOutlined,
-  ShopOutlined,
-  DashboardOutlined,
-  UserOutlined,
-  UnorderedListOutlined,
-  TagsOutlined,
-} from "@ant-design/icons";
 import jsonServerDataProvider from "@refinedev/simple-rest";
+import React from "react";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { authProvider } from "./authProvider";
 
 import "dayjs/locale/de";
 
-import { DashboardPage } from "./pages/dashboard";
-import { OrderList, OrderShow } from "./pages/orders";
-import { AuthPage } from "./pages/auth";
-import { CustomerShow, CustomerList } from "./pages/customers";
-import { CourierList, CourierCreate, CourierEdit } from "./pages/couriers";
-import {
-  ProductList,
-  ProductCreate,
-  ProductEdit,
-  ProductShow,
-} from "./pages/products";
-import { StoreCreate, StoreEdit, StoreList } from "./pages/stores";
-import { CategoryList } from "./pages/categories";
 import { useTranslation } from "react-i18next";
 import { Header, Title } from "./components";
 import { BikeWhiteIcon } from "./components/icons";
 import { ConfigProvider } from "./context";
 import { useAutoLoginForDemo } from "./hooks";
+import { AuthPage } from "./pages/auth";
+import { CourierCreate, CourierEdit, UserManagement } from "./pages/couriers";
+import { CustomerList, CustomerShow } from "./pages/customers";
+import { DashboardPage } from "./pages/dashboard";
+import { OrderList, OrderShow } from "./pages/orders";
 
 import "@refinedev/antd/dist/reset.css";
 
@@ -52,7 +41,7 @@ const App: React.FC = () => {
   // We use this hook to skip the login page and demonstrate the application more quickly.
   const { loading } = useAutoLoginForDemo();
 
-  const API_URL = "https://api.finefoods.refine.dev";
+  const API_URL = ""; // Update API URL
   const dataProvider = jsonServerDataProvider(API_URL);
 
   const { t, i18n } = useTranslation();
@@ -92,9 +81,9 @@ const App: React.FC = () => {
                 },
               },
               {
-                name: "orders",
-                list: "/orders",
-                show: "/orders/:id",
+                name: "orders", // Change name from orders to purchaseHistory
+                list: "/purchaseHistory", // Update list route
+                show: "/purchaseHistory/:id", // Update show route
                 meta: {
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
                   icon: <ShoppingOutlined />,
@@ -109,41 +98,41 @@ const App: React.FC = () => {
                   icon: <UserOutlined />,
                 },
               },
+              // {
+              //   name: 'products',
+              //   list: '/products',
+              //   create: '/products/new',
+              //   edit: '/products/:id/edit',
+              //   show: '/products/:id',
+              //   meta: {
+              //     // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
+              //     icon: <UnorderedListOutlined />,
+              //   },
+              // },
+              // {
+              //   name: 'categories',
+              //   list: '/categories',
+              //   meta: {
+              //     // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
+              //     icon: <TagsOutlined />,
+              //   },
+              // },
+              // {
+              //   name: 'stores',
+              //   list: '/stores',
+              //   create: '/stores/new',
+              //   edit: '/stores/:id/edit',
+              //   meta: {
+              //     // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
+              //     icon: <ShopOutlined />,
+              //   },
+              // },
               {
-                name: "products",
-                list: "/products",
-                create: "/products/new",
-                edit: "/products/:id/edit",
-                show: "/products/:id",
-                meta: {
-                  // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-                  icon: <UnorderedListOutlined />,
-                },
-              },
-              {
-                name: "categories",
-                list: "/categories",
-                meta: {
-                  // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-                  icon: <TagsOutlined />,
-                },
-              },
-              {
-                name: "stores",
-                list: "/stores",
-                create: "/stores/new",
-                edit: "/stores/:id/edit",
-                meta: {
-                  // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-                  icon: <ShopOutlined />,
-                },
-              },
-              {
-                name: "couriers",
-                list: "/couriers",
-                create: "/couriers/new",
-                edit: "/couriers/:id/edit",
-                show: "/couriers/:id",
+                name: "Users",
+                list: "/UserManagement",
+                create: "/UserManagement/new",
+                edit: "/UserManagement/:id/edit",
+                show: "/UserManagement/:id",
                 meta: {
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
                   icon: <BikeWhiteIcon />,
@@ -174,23 +163,16 @@ const App: React.FC = () => {
               >
                 <Route index element={<DashboardPage />} />
 
-                <Route path="/orders">
+                <Route path="/purchaseHistory">
                   <Route index element={<OrderList />} />
                   <Route path=":id" element={<OrderShow />} />
                 </Route>
 
-                <Route
-                  path="/customers"
-                  element={
-                    <CustomerList>
-                      <Outlet />
-                    </CustomerList>
-                  }
-                >
+                <Route path="/customers" element={<CustomerList />}>
                   <Route path=":id" element={<CustomerShow />} />
                 </Route>
 
-                <Route
+                {/* <Route
                   path="/products"
                   element={
                     <ProductList>
@@ -201,25 +183,18 @@ const App: React.FC = () => {
                   <Route path="new" element={<ProductCreate />} />
                   <Route path=":id" element={<ProductShow />} />
                   <Route path=":id/edit" element={<ProductEdit />} />
-                </Route>
+                </Route> */}
 
-                <Route path="/stores">
+                {/* <Route path="/stores">
                   <Route index element={<StoreList />} />
                   <Route path="new" element={<StoreCreate />} />
                   <Route path=":id/edit" element={<StoreEdit />} />
-                </Route>
+                </Route> */}
 
-                <Route path="/categories" element={<CategoryList />} />
+                {/* <Route path="/categories" element={<CategoryList />} /> */}
 
-                <Route path="/couriers">
-                  <Route
-                    path=""
-                    element={
-                      <CourierList>
-                        <Outlet />
-                      </CourierList>
-                    }
-                  >
+                <Route path="/UserManagement">
+                  <Route path="" element={<UserManagement />}>
                     <Route path="new" element={<CourierCreate />} />
                   </Route>
 
@@ -241,8 +216,8 @@ const App: React.FC = () => {
                       type="login"
                       formProps={{
                         initialValues: {
-                          email: "demo@refine.dev",
-                          password: "demodemo",
+                          email: "",
+                          password: "",
                         },
                       }}
                     />
@@ -255,8 +230,8 @@ const App: React.FC = () => {
                       type="register"
                       formProps={{
                         initialValues: {
-                          email: "demo@refine.dev",
-                          password: "demodemo",
+                          email: "",
+                          password: "",
                         },
                       }}
                     />

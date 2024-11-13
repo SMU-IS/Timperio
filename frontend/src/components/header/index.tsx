@@ -56,6 +56,7 @@ export const Header: React.FC = () => {
   const locale = useGetLocale();
   const changeLanguage = useSetLocale();
   const { data: user } = useGetIdentity<IIdentity>();
+
   const screens = useBreakpoint();
   const t = useTranslate();
 
@@ -95,23 +96,23 @@ export const Header: React.FC = () => {
     queryOptions: {
       enabled: false,
       onSuccess: (data) => {
-        const orderOptionGroup = data.data.map((item) =>
-          renderItem(
-            `${item.store.title} / #${item.orderNumber}`,
-            item?.products?.[0].images?.[0]?.url ||
-              "/images/default-order-img.png",
-            `/orders/show/${item.id}`,
-          ),
-        );
-        if (orderOptionGroup.length > 0) {
-          setOptions((prevOptions) => [
-            ...prevOptions,
-            {
-              label: renderTitle(t("orders.orders")),
-              options: orderOptionGroup,
-            },
-          ]);
-        }
+        // const orderOptionGroup = data.data.map((item) =>
+        //   renderItem(
+        //     `${item.store.title} / #${item.orderNumber}`,
+        //     item?.products?.[0].images?.[0]?.url ||
+        //       '/images/default-order-img.png',
+        //     `/orders/show/${item.id}`
+        //   )
+        // );
+        // if (orderOptionGroup.length > 0) {
+        //   setOptions((prevOptions) => [
+        //     ...prevOptions,
+        //     {
+        //       label: renderTitle(t('orders.orders')),
+        //       options: orderOptionGroup,
+        //     },
+        //   ]);
+        // }
       },
     },
   });
@@ -124,18 +125,18 @@ export const Header: React.FC = () => {
     queryOptions: {
       enabled: false,
       onSuccess: (data) => {
-        const storeOptionGroup = data.data.map((item) =>
-          renderItem(item.title, "", `/stores/edit/${item.id}`),
-        );
-        if (storeOptionGroup.length > 0) {
-          setOptions((prevOptions) => [
-            ...prevOptions,
-            {
-              label: renderTitle(t("stores.stores")),
-              options: storeOptionGroup,
-            },
-          ]);
-        }
+        // const storeOptionGroup = data.data.map((item) =>
+        //   renderItem(item.title, '', `/stores/edit/${item.id}`)
+        // );
+        // if (storeOptionGroup.length > 0) {
+        //   setOptions((prevOptions) => [
+        //     ...prevOptions,
+        //     {
+        //       label: renderTitle(t('stores.stores')),
+        //       options: storeOptionGroup,
+        //     },
+        //   ]);
+        // }
       },
     },
   });
@@ -148,22 +149,22 @@ export const Header: React.FC = () => {
     queryOptions: {
       enabled: false,
       onSuccess: (data) => {
-        const courierOptionGroup = data.data.map((item) =>
-          renderItem(
-            `${item.name} ${item.surname}`,
-            item.avatar[0].url,
-            `/couriers/show/${item.id}`,
-          ),
-        );
-        if (courierOptionGroup.length > 0) {
-          setOptions((prevOptions) => [
-            ...prevOptions,
-            {
-              label: renderTitle(t("couriers.couriers")),
-              options: courierOptionGroup,
-            },
-          ]);
-        }
+        // const courierOptionGroup = data.data.map((item) =>
+        //   renderItem(
+        //     `${item.name} ${item.surname}`,
+        //     item.avatar[0].url,
+        //     `/couriers/show/${item.id}`
+        //   )
+        // );
+        // if (courierOptionGroup.length > 0) {
+        //   setOptions((prevOptions) => [
+        //     ...prevOptions,
+        //     {
+        //       label: renderTitle(t('couriers.couriers')),
+        //       options: courierOptionGroup,
+        //     },
+        //   ]);
+        // }
       },
     },
   });
@@ -213,7 +214,7 @@ export const Header: React.FC = () => {
           >
             <Input
               size="large"
-              placeholder={t("search.placeholder")}
+              placeholder={"Search"}
               suffix={<div className={styles.inputSuffix}>/</div>}
               // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
               prefix={<SearchOutlined className={styles.inputPrefix} />}
