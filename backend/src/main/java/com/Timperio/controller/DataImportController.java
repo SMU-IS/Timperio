@@ -18,7 +18,7 @@ public class DataImportController {
     public ResponseEntity<String> importSalesData() {
         try {
             dataImportService.importData("./src/main/resources/db/migration/sales_data.xlsx");
-            return ResponseEntity.ok(SuccessMessage.CUSTOMER_DB_POPULATED.toString());
+            return ResponseEntity.ok(SuccessMessage.DB_TABLES_POPULATED.toString());
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error during data import: " + e.getMessage());
         }

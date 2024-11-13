@@ -17,6 +17,9 @@ import com.Timperio.service.impl.CustomerService;
 import com.Timperio.service.impl.PurchaseHistoryService;
 import com.Timperio.service.impl.DataImportService;
 import com.Timperio.models.PurchaseHistory;
+import com.Timperio.exceptions.CustomerNotFoundException;
+import com.Timperio.exceptions.InvalidPurchaseHistoryException;
+import com.Timperio.exceptions.InvalidTotalSpendingException;
 import com.Timperio.models.Customer;
 
 @Service
@@ -38,10 +41,7 @@ public class DataImportServiceImpl implements DataImportService {
 
             Sheet sheet = workbook.getSheet("Sales by product");
             
-            System.out.println("Loading Customer Table... ");
             List<Customer> customers = loadCustomers(sheet);
-            
-            System.out.println("Customer Table Loaded. Loading Purchase History Table...");
             List<PurchaseHistory> purchaseHistoryList = loadPurchaseHistory(sheet);
 
             Map<Integer, Map<String, Object>> customerDetailsMap = reformatCustomerDetails(purchaseHistoryList);
@@ -50,7 +50,7 @@ public class DataImportServiceImpl implements DataImportService {
                 Customer customer = customerService.getCustomer(customerId);
 
                 if (customer == null) {
-                    System.out.println(customerId);
+                    throw new CustomerNotFoundException(customerId + "Customer not found.");
                 }
 
                 Object purchaseHistoryOfCustomer = customerDetails.get("purchaseHistory");
@@ -60,7 +60,7 @@ public class DataImportServiceImpl implements DataImportService {
                     List<PurchaseHistory> purchaseHistoryOfCustomerList = (List<PurchaseHistory>) purchaseHistoryOfCustomer;
                     customer.setPurchaseHistory(purchaseHistoryOfCustomerList);
                 } else {
-                    System.out.println(purchaseHistoryOfCustomer);
+                    throw new InvalidPurchaseHistoryException("Expected purchase history to be a List<PurchaseHistory>, but got: " + purchaseHistoryOfCustomer.getClass().getName());
                 }
             
                 if (totalSpendingOfCustomer instanceof Double) {
@@ -68,16 +68,20 @@ public class DataImportServiceImpl implements DataImportService {
                     BigDecimal roundedSpending = new BigDecimal(totalSpending).setScale(2, RoundingMode.HALF_UP);
                     customer.setTotalSpending(roundedSpending.doubleValue());
                 } else {
-                    System.out.println(totalSpendingOfCustomer);
+                    throw new InvalidTotalSpendingException("Expected total spending to be a Double, but got: " + totalSpendingOfCustomer.getClass().getName());
                 }
 
                 entityManager.merge(customer);
             });
 
-            System.out.println("Updated Purchase History List and Total Spending");
-
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+        } catch (CustomerNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (InvalidPurchaseHistoryException e) {
+            System.out.println(e.getMessage());
+        } catch (InvalidTotalSpendingException e) {
+            System.out.println(e.getMessage());
         }
     }
 
