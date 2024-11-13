@@ -20,6 +20,7 @@ import com.Timperio.models.PurchaseHistory;
 import com.Timperio.exceptions.CustomerNotFoundException;
 import com.Timperio.exceptions.InvalidPurchaseHistoryException;
 import com.Timperio.exceptions.InvalidTotalSpendingException;
+import com.Timperio.exceptions.DataImportException;
 import com.Timperio.models.Customer;
 
 @Service
@@ -75,13 +76,9 @@ public class DataImportServiceImpl implements DataImportService {
             });
 
         } catch (IOException e) {
-            System.out.println(e.getMessage());
-        } catch (CustomerNotFoundException e) {
-            System.out.println(e.getMessage());
-        } catch (InvalidPurchaseHistoryException e) {
-            System.out.println(e.getMessage());
-        } catch (InvalidTotalSpendingException e) {
-            System.out.println(e.getMessage());
+            throw new DataImportException("Failed to read the Excel file: " + e.getMessage(), e);
+        } catch (CustomerNotFoundException | InvalidPurchaseHistoryException | InvalidTotalSpendingException e) {
+            throw new DataImportException("Error processing customer data: " + e.getMessage(), e);
         }
     }
 
