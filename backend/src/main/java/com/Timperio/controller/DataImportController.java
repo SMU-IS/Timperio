@@ -21,7 +21,7 @@ public class DataImportController {
     public ResponseEntity<String> importSalesData() {
         try {
             dataImportService.importData("./src/main/resources/db/migration/sales_data.xlsx");
-            return ResponseEntity.ok(SuccessMessage.DB_TABLES_POPULATED.toString());
+            return ResponseEntity.ok(SuccessMessage.SALES_CUSTOMER_DB_POPULATED.toString());
         } catch (DataImportException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Data import failed: " + e.getMessage());
         } catch (Exception e) {
