@@ -46,8 +46,6 @@ export const OrderList = () => {
     }
   };
 
-  console.log(data);
-
   useEffect(() => {
     fetchFilteredData();
   }, []);
