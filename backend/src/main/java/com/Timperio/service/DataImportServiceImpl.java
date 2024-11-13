@@ -41,7 +41,7 @@ public class DataImportServiceImpl implements DataImportService {
 
             Sheet sheet = workbook.getSheet("Sales by product");
             
-            List<Customer> customers = loadCustomers(sheet);
+            loadCustomers(sheet);
             List<PurchaseHistory> purchaseHistoryList = loadPurchaseHistory(sheet);
 
             Map<Integer, Map<String, Object>> customerDetailsMap = reformatCustomerDetails(purchaseHistoryList);
@@ -131,7 +131,7 @@ public class DataImportServiceImpl implements DataImportService {
 
     }
 
-    private List<Customer> loadCustomers(Sheet sheet) {
+    private void loadCustomers(Sheet sheet) {
         Iterator<Row> rowIterator = sheet.iterator();
 
         if (rowIterator.hasNext()) {
@@ -139,7 +139,6 @@ public class DataImportServiceImpl implements DataImportService {
         }
 
         Set<Integer> uniqueCustomerIDs = new HashSet<>();
-        List<Customer> customers = new ArrayList<>();
 
         while (rowIterator.hasNext()) {
             Row row = rowIterator.next();
@@ -148,11 +147,9 @@ public class DataImportServiceImpl implements DataImportService {
         }
 
         for (int id: uniqueCustomerIDs) {
-            Customer customer = customerService.createCustomer(id);
-            customers.add(customer);
+            customerService.createCustomer(id);
         }
 
-        return customers;
     }
 }
 
