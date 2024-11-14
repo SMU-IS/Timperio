@@ -20,8 +20,8 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Install dependencies
-      run: mvn clean install -U
+      run: mvn clean install -U --file backend
     - name: Apply Spotless code formatting
-      run: mvn spotless:apply
+      run: mvn spotless:apply --file backend
     - name: Build with Maven
       run: mvn -B package --file backend/pom.xml
