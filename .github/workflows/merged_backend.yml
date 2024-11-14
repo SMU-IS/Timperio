@@ -20,6 +20,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Apply Spotless code formatting
-      run: mvn -U spotless:apply
+      run: mvn com.diffplug.spotless:spotless-maven-plugin:check
     - name: Build with Maven
       run: mvn -B package --file backend/pom.xml
