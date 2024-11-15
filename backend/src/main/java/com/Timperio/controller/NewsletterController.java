@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,11 @@ public class NewsletterController {
     @GetMapping("/getCampaigns")
     public ResponseEntity<String> getCampaigns() {
         return this.newsletterService.getCampaigns();
+    }
+
+    @GetMapping("/getCampaignContent")
+    public ResponseEntity<String> getCampaignContent(@RequestBody String campaignID) {
+        return this.newsletterService.getCampaignContent(campaignID);
     }
 
     @PutMapping("/setCampaignContent")
