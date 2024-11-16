@@ -36,6 +36,7 @@
    PYTHON_DB_URL=postgresql://postgres:root@localhost:5432/timperiodb
    JWT_SECRET_KEY={JWT_SECRET_KEY}
    SERVER=//localhost:5173
+   MAILCHIMP_API_KEY={MAILCHIMP_API_KEY}
    ```
 
 4. Run the project in development environment

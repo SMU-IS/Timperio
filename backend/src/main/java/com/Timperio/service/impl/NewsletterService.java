@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 
 import com.Timperio.dto.NewsletterCampaignContentDTO;
 import com.Timperio.dto.NewsletterRequestDTO;
-import com.Timperio.dto.NewsletterResponseDTO;
 
 public interface NewsletterService {
     ResponseEntity<String> healthCheck();
@@ -14,4 +13,5 @@ public interface NewsletterService {
     ResponseEntity<String> setCampaignContent(NewsletterCampaignContentDTO newsletterCampaignContentDTO);
 
     ResponseEntity<String> sendNewsletter(NewsletterRequestDTO newsletterRequestDTO);
+
 }

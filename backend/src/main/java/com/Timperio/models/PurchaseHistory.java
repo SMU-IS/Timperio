@@ -1,5 +1,7 @@
 package com.Timperio.models;
 
+import java.time.LocalDate;
+
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
@@ -28,7 +30,7 @@ public class PurchaseHistory {
     private Integer salesId;
 
     @Column(name = "sales_date", nullable = false)
-    private String salesDate;
+    private LocalDate salesDate;
 
     @Column(name = "sales_type", nullable = true)
     @Enumerated(EnumType.STRING)
@@ -67,7 +69,7 @@ public class PurchaseHistory {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
-    
+
     @Column(name = "total_price", nullable = false)
     private Double totalPrice;
 

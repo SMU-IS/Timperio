@@ -34,7 +34,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     public void populateCustomersFromHistoryPurchases() {
         List<PurchaseHistory> purchaseHistories = this.purchaseHistoryService.findAll();
-
+        System.out.println("purchaseHistories size: " + purchaseHistories.size());
         for (PurchaseHistory purchaseHistory : purchaseHistories) {
             Customer customer = purchaseHistory.getCustomer();
             Integer customerId = customer.getCustomerId();
@@ -52,7 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
 
                 String sql = "INSERT INTO customer (customer_id, customer_email, total_spending) " +
                         "VALUES (:customerId, :email, :totalSpending)";
-
+                System.out.println("sql: " + sql);
                 entityManager.createNativeQuery(sql)
                         .setParameter("customerId", customerId)
                         .setParameter("email", customerEmail)

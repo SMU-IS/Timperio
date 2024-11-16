@@ -1,5 +1,7 @@
 package com.Timperio.dto;
 
+import java.time.LocalDate;
+
 import com.Timperio.enums.SalesType;
 
 import lombok.AllArgsConstructor;
@@ -11,8 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 public class PurchaseHistoryDto {
+    private Integer salesId;
     private Integer customerId;
+    private String product;
     private SalesType salesType;
     private Double totalPrice;
-    private String salesDate;
+    private LocalDate salesDate;
 }

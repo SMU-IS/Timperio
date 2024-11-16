@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
@@ -23,6 +24,7 @@ import com.Timperio.enums.Role;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -43,15 +45,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/login").permitAll()
-                        .requestMatchers("/v3/api-docs/**").permitAll()
-                        .requestMatchers(("/swagger-ui/**")).permitAll()
-                        .requestMatchers(("/api/v1/customers/populateCustomerDb")).permitAll()
-                        .requestMatchers("/api/v1/purchaseHistory")
-                        .hasAnyRole(Role.MARKETING.toString(), Role.SALES.toString())
-                        .requestMatchers("/api/v1/export")
-                        .hasRole(Role.MARKETING.toString())
                         .anyRequest().authenticated())
-
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedHandler(customAccessDeniedHandler())
                         .authenticationEntryPoint(customAuthenticationEntryPoint()))
@@ -59,7 +53,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .cors();
+                .cors(); // Ensure CORS is enabled
 
         return http.build();
     }
@@ -83,14 +77,16 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(serverUrl));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        // Make sure this is correctly pointing to your frontend URL(s)
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Add more URLs if needed
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true); // Allow credentials like cookies if needed
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/**", configuration); // Apply to all endpoints
 
         return source;
     }
+
 }
