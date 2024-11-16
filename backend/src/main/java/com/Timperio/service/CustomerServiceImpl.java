@@ -17,9 +17,6 @@ import com.Timperio.repository.CustomerRepository;
 import com.Timperio.service.impl.CustomerService;
 import com.Timperio.service.impl.PurchaseHistoryService;
 
-import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;;
-
 @Service
 public class CustomerServiceImpl implements CustomerService {
     @Autowired
@@ -28,38 +25,54 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     public CustomerRepository customerRepository;
 
-    @Autowired
-    private EntityManager entityManager;
+    // @Autowired
+    // private EntityManager entityManager;
 
-    @Transactional
-    public void populateCustomersFromHistoryPurchases() {
-        List<PurchaseHistory> purchaseHistories = this.purchaseHistoryService.findAll();
-        System.out.println("purchaseHistories size: " + purchaseHistories.size());
-        for (PurchaseHistory purchaseHistory : purchaseHistories) {
-            Customer customer = purchaseHistory.getCustomer();
-            Integer customerId = customer.getCustomerId();
-            List<PurchaseHistory> specificCustomerPurchaseHistory = this.purchaseHistoryService
-                    .findByCustomerId(customerId);
+    // @Transactional
+    // public void populateCustomersFromHistoryPurchases() {
+    // List<PurchaseHistory> purchaseHistories =
+    // this.purchaseHistoryService.findAll();
 
-            String customerEmail = String.format("jane_doe_%d@yopmail.com", customerId);
-            Double totalSpendingByCustomer = this.purchaseHistoryService.getSalesTotal(specificCustomerPurchaseHistory);
+    // for (PurchaseHistory purchaseHistory : purchaseHistories) {
+    // Customer customer = purchaseHistory.getCustomer();
+    // Integer customerId = customer.getCustomerId();
+    // List<PurchaseHistory> specificCustomerPurchaseHistory =
+    // this.purchaseHistoryService
+    // .findByCustomerId(customerId);
 
-            if (!customerRepository.existsByCustomerId(customerId)) {
-                Customer newCustomer = new Customer();
-                newCustomer.setCustomerId(customerId);
-                newCustomer.setCustomerEmail(customerEmail);
-                newCustomer.setTotalSpending(totalSpendingByCustomer);
+    // String customerEmail = String.format("jane_doe_%d@yopmail.com", customerId);
+    // Double totalSpendingByCustomer =
+    // this.purchaseHistoryService.getSalesTotal(specificCustomerPurchaseHistory);
 
-                String sql = "INSERT INTO customer (customer_id, customer_email, total_spending) " +
-                        "VALUES (:customerId, :email, :totalSpending)";
-                System.out.println("sql: " + sql);
-                entityManager.createNativeQuery(sql)
-                        .setParameter("customerId", customerId)
-                        .setParameter("email", customerEmail)
-                        .setParameter("totalSpending", totalSpendingByCustomer)
-                        .executeUpdate();
-            }
-        }
+    // if (!customerRepository.existsByCustomerId(customerId)) {
+    // Customer newCustomer = new Customer();
+    // newCustomer.setCustomerId(customerId);
+    // newCustomer.setCustomerEmail(customerEmail);
+    // newCustomer.setTotalSpending(totalSpendingByCustomer);
+
+    // String sql = "INSERT INTO customer (customer_id, customer_email,
+    // total_spending) " +
+    // "VALUES (:customerId, :email, :totalSpending)";
+
+    // entityManager.createNativeQuery(sql)
+    // .setParameter("customerId", customerId)
+    // .setParameter("email", customerEmail)
+    // .setParameter("totalSpending", totalSpendingByCustomer)
+    // .executeUpdate();
+    // }
+    // }
+    // }
+
+    @Override
+    public Customer createCustomer(Integer customerId) {
+        Customer newCustomer = new Customer();
+        String customerEmail = String.format("jane_doe_%d@yopmail.com", customerId);
+        newCustomer.setCustomerId(customerId);
+        newCustomer.setCustomerEmail(customerEmail);
+        newCustomer.setTotalSpending(0.0);
+
+        customerRepository.save(newCustomer);
+        return newCustomer;
     }
 
     @Override

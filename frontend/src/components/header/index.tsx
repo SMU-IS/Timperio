@@ -1,37 +1,37 @@
-import { useState, useEffect } from 'react';
+import { DownOutlined, SearchOutlined } from "@ant-design/icons";
 import {
-  useGetLocale,
-  useSetLocale,
   useGetIdentity,
-  useTranslate,
+  useGetLocale,
   useList,
-} from '@refinedev/core';
-import { Link } from 'react-router-dom';
-import { SearchOutlined, DownOutlined } from '@ant-design/icons';
+  useSetLocale,
+  useTranslate,
+} from "@refinedev/core";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import {
-  Dropdown,
-  Input,
-  Avatar,
-  Typography,
-  Space,
-  Grid,
-  Row,
-  Col,
-  AutoComplete,
   Layout as AntdLayout,
+  AutoComplete,
+  Avatar,
   Button,
+  Col,
+  Dropdown,
+  Grid,
+  Input,
+  Row,
+  Space,
   theme,
+  Typography,
   type MenuProps,
 } from 'antd';
 
-import { useTranslation } from 'react-i18next';
-import debounce from 'lodash/debounce';
+import debounce from "lodash/debounce";
+import { useTranslation } from "react-i18next";
 
-import { useConfigProvider } from '../../context';
-import { IconMoon, IconSun } from '../../components/icons';
-import type { IOrder, IStore, ICourier, IIdentity } from '../../interfaces';
-import { useStyles } from './styled';
+import { IconMoon, IconSun } from "../../components/icons";
+import { useConfigProvider } from "../../context";
+import type { ICourier, IIdentity, IOrder, IStore } from "../../interfaces";
+import { useStyles } from "./styled";
 
 const { Header: AntdHeader } = AntdLayout;
 const { useToken } = theme;
@@ -56,10 +56,9 @@ export const Header: React.FC = () => {
   const locale = useGetLocale();
   const changeLanguage = useSetLocale();
   const { data: user } = useGetIdentity<IIdentity>();
-
+  const role = localStorage.getItem("role");
   const screens = useBreakpoint();
   const t = useTranslate();
-
   const currentLocale = locale();
 
   const renderTitle = (title: string) => (
@@ -186,7 +185,7 @@ export const Header: React.FC = () => {
           <Avatar size={16} src={`/images/flags/${lang}.svg`} />
         </span>
       ),
-      label: lang === 'en' ? 'English' : 'German',
+      label: lang === "en" ? "English" : "Grman",
     }));
 
   return (
@@ -214,7 +213,7 @@ export const Header: React.FC = () => {
           >
             <Input
               size="large"
-              placeholder={t('search.placeholder')}
+              placeholder={"Search"}
               suffix={<div className={styles.inputSuffix}>/</div>}
               // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
               prefix={<SearchOutlined className={styles.inputPrefix} />}
@@ -251,9 +250,11 @@ export const Header: React.FC = () => {
 
             <Space size={screens.md ? 16 : 8} align="center">
               <Text ellipsis className={styles.userName}>
-                {user?.name}
+                {user?.name} ({role})
               </Text>
-              <Avatar size="large" src={user?.avatar} alt={user?.name} />
+              <Avatar size="large" alt={user?.name}>
+                {user?.name.charAt(0)}
+              </Avatar>
             </Space>
           </Space>
         </Col>

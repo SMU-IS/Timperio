@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import com.Timperio.config.MailChimpConstant;
+import com.Timperio.constant.UrlConstant;
 import com.Timperio.dto.NewsletterCampaignContentDTO;
 import com.Timperio.dto.NewsletterRequestDTO;
 import com.Timperio.service.impl.NewsletterService;
@@ -24,8 +25,6 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 import java.util.Properties;
 import javax.mail.*;
-import javax.mail.PasswordAuthentication;
-
 import javax.mail.internet.*;
 
 import okhttp3.*;
@@ -48,7 +47,7 @@ public class NewsletterServiceImpl implements NewsletterService {
 
     public ResponseEntity<String> healthCheck() {
         String datacenter = this.mailChimpConstant.getDatacenter();
-        String url = String.format("https://%s.api.mailchimp.com/3.0/ping", datacenter);
+        String url = String.format(UrlConstant.MAILCHIMP_PING, datacenter);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -62,7 +61,7 @@ public class NewsletterServiceImpl implements NewsletterService {
 
     public ResponseEntity<String> getCampaigns() {
         String datacenter = this.mailChimpConstant.getDatacenter();
-        String url = String.format("https://%s.api.mailchimp.com/3.0/campaigns", datacenter);
+        String url = String.format(UrlConstant.MAILCHIMP_CAMPAIGNS, datacenter);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -74,43 +73,38 @@ public class NewsletterServiceImpl implements NewsletterService {
         return exchange;
     }
 
-    // public ResponseEntity<String> getCampaignContent(String campaignID) {
-    // String campaignId = newsletterCampaignContentDTO.getCampaignID();
-    // String htmlContent = newsletterCampaignContentDTO.getHtmlContent();
+    public ResponseEntity<String> getCampaignContent() {
+        String campaignId = "7aa95eea65";
 
-    // String datacenter = this.mailChimpConstant.getDatacenter();
-    // String url =
-    // String.format("https://%s.api.mailchimp.com/3.0/campaigns/%s/content",
-    // datacenter,
-    // campaignId);
+        String datacenter = this.mailChimpConstant.getDatacenter();
+        String url = String.format("https://%s.api.mailchimp.com/3.0/campaigns/%s/content",
+                datacenter,
+                campaignId);
 
-    // String requestBody = String.format("{\"html\":\"%s\"}",
-    // htmlContent.replace("\"", "\\\""));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBasicAuth("anystring", this.mailChimpConstant.getAPI_KEY());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.GET,
+                entity, String.class);
 
-    // HttpHeaders headers = new HttpHeaders();
-    // headers.setContentType(MediaType.APPLICATION_JSON);
-    // headers.setBasicAuth("anystring", this.mailChimpConstant.getAPI_KEY());
-    // HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
-    // ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.PUT,
-    // entity, String.class);
-
-    // if (exchange.getStatusCode().is2xxSuccessful()) {
-    // return exchange;
-    // } else {
-    // return ResponseEntity.status(exchange.getStatusCode()).body(null);
-    // }
-    // }
+        if (exchange.getStatusCode().is2xxSuccessful()) {
+            return exchange;
+        } else {
+            return ResponseEntity.status(exchange.getStatusCode()).body(null);
+        }
+    }
 
     public ResponseEntity<String> setCampaignContent(NewsletterCampaignContentDTO newsletterCampaignContentDTO) {
-        String campaignId = newsletterCampaignContentDTO.getCampaignID();
+        String campaignId = "7aa95eea65";
         String htmlContent = newsletterCampaignContentDTO.getHtmlContent();
 
         String datacenter = this.mailChimpConstant.getDatacenter();
-        String url = String.format("https://%s.api.mailchimp.com/3.0/campaigns/%s/content", datacenter,
-                campaignId);
+        String url = String.format("https://%s.api.mailchimp.com/3.0/campaigns/%s/content", datacenter, campaignId);
 
         String requestBody = String.format("{\"html\":\"%s\"}", htmlContent.replace("\"", "\\\""));
 
+        System.out.println(requestBody);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBasicAuth("anystring", this.mailChimpConstant.getAPI_KEY());
@@ -124,8 +118,8 @@ public class NewsletterServiceImpl implements NewsletterService {
         }
     }
 
-    private static final String FROM_EMAIL = "junyi4797@gmail.com"; // Your email address
-    private static final String PASSWORD = "suputvqfktsakjne";
+    private static final String FROM_EMAIL = "timperio@liawjunyi.site"; // Your email address
+    private static final String PASSWORD = "hwfbxwvjbsiqlmpx";
 
     public ResponseEntity<String> sendNewsletter(NewsletterRequestDTO newsletterRequestDTO) {
         CustomerSegment customerSegment = newsletterRequestDTO.getCustomerSegment();
@@ -153,17 +147,24 @@ public class NewsletterServiceImpl implements NewsletterService {
         });
 
         try {
-            for (String email : allEmails) {
+            for (int i = 0; i < allEmails.length; i += 100) {
                 MimeMessage message = new MimeMessage(session);
                 message.setFrom(new InternetAddress(FROM_EMAIL));
-                message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
                 message.setSubject("test");
                 message.setContent(newsletterRequestDTO.getHtmlContent(), "text/html");
 
+                // Add up to 100 recipients to BCC
+                for (int j = i; j < i + 100 && j < allEmails.length; j++) {
+                    message.addRecipient(Message.RecipientType.BCC, new InternetAddress(allEmails[j]));
+                }
+
                 Transport.send(message);
-                System.out.println("Sent message successfully to " + email);
+                System.out.println("Batch sent successfully.");
+
+                // Optional: Introduce a delay between batches
+                Thread.sleep(1000); // 1 second delay
             }
-        } catch (MessagingException e) {
+        } catch (MessagingException | InterruptedException e) {
             e.printStackTrace();
         }
 

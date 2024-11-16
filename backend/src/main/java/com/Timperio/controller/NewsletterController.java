@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Timperio.constant.UrlConstant;
 import com.Timperio.dto.NewsletterCampaignContentDTO;
 import com.Timperio.dto.NewsletterRequestDTO;
 import com.Timperio.service.impl.NewsletterService;
 
+@RequestMapping(UrlConstant.API_VERSION + "/newsletter")
 @RestController
-@RequestMapping("api/v1/newsletter")
+
 public class NewsletterController {
 
     @Autowired
@@ -25,9 +27,14 @@ public class NewsletterController {
         return this.newsletterService.healthCheck();
     }
 
-    @GetMapping("/getTemplates")
+    @GetMapping("/getCampaigns")
     public ResponseEntity<String> getCampaigns() {
         return this.newsletterService.getCampaigns();
+    }
+
+    @GetMapping("/getTemplates")
+    public ResponseEntity<String> getTemplates() {
+        return this.newsletterService.getCampaignContent();
     }
 
     @PutMapping("/setTemplates")

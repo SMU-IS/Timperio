@@ -1,42 +1,31 @@
-import type { AuthProvider } from '@refinedev/core';
-import axios from 'axios';
-import { notification } from 'antd';
-import { disableAutoLogin, enableAutoLogin } from './hooks';
+import type { AuthProvider, OnErrorResponse } from "@refinedev/core";
+import { notification } from "antd";
+import axios from "axios";
+import { disableAutoLogin, enableAutoLogin } from "./hooks";
 
-export const TOKEN_KEY = 'token_timperio';
-export const EXPIRES_IN_KEY = 'token_expiry';
-export const EMAIL = 'loggedInEmail';
+export const TOKEN_KEY = "token_timperio";
+export const EXPIRES_IN_KEY = "token_expiry";
+export const EMAIL = "loggedInEmail";
+
 let logoutTimer: NodeJS.Timeout | null = null;
 let loggedInEmail: string;
 
 export const authProvider: AuthProvider = {
   login: async ({ email, password }) => {
-    const token = localStorage.getItem(TOKEN_KEY);
-    const expiry = localStorage.getItem(EXPIRES_IN_KEY);
-
-    // Check if token exists and is still valid
-    if (token && expiry && Date.now() < parseInt(expiry)) {
-      // notification.info({
-      //   message: 'Already Logged In',
-      //   description: 'You are already logged in.',
-      // });
-      startLogoutTimer(parseInt(expiry) - Date.now());
-      return { success: true, redirectTo: '/' };
-    }
-
-    // If no valid session, proceed with login API call
     try {
       enableAutoLogin();
       const response = await axios.post(
-        'http://localhost:8080/api/v1/auth/login',
+        `${import.meta.env.VITE_SERVER}/api/v1/auth/login`,
         {
           userEmail: email,
           password: password,
         }
       );
 
-      const { token: newToken, expiresIn } = response.data;
-      loggedInEmail = email; // Store email temporarily after login
+      const { token: newToken, expiresIn, role } = response.data;
+      console.log(response.data);
+      
+      loggedInEmail = email;
       localStorage.setItem(EMAIL, loggedInEmail);
 
       localStorage.setItem(TOKEN_KEY, newToken);
@@ -45,29 +34,30 @@ export const authProvider: AuthProvider = {
         String(Date.now() + expiresIn * 1000)
       );
 
+      localStorage.setItem("role", role);
+
       notification.success({
-        message: 'Login Successful',
-        description: 'You have been logged in successfully.',
+        message: "Login Successful",
+        description: "You have been logged in successfully.",
       });
 
       startLogoutTimer(expiresIn * 1000);
 
       return {
         success: true,
-        redirectTo: '/',
+        redirectTo: "/",
       };
     } catch (error) {
-      notification.error({
-        message: 'Login Failed',
-        description:
-          error.response?.data?.message || 'Please check your credentials.',
-      });
+      // notification.error({
+      //     message: 'Login Failed',
+      //     description: error.response?.data?.message || 'Please check your credentials.',
+      // });
 
       return {
         success: false,
         error: {
-          message: 'Login failed',
-          name: 'Invalid email or password',
+          message: "Login failed",
+          name: "Invalid email or password",
         },
       };
     }
@@ -78,8 +68,8 @@ export const authProvider: AuthProvider = {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(EXPIRES_IN_KEY);
     localStorage.removeItem(EMAIL);
-    loggedInEmail = ''; // Clear temporary email storage
-
+    localStorage.removeItem("role");
+    loggedInEmail = "";
     return {
       success: true,
       redirectTo: '/login',
@@ -89,17 +79,21 @@ export const authProvider: AuthProvider = {
     const token = localStorage.getItem(TOKEN_KEY);
     const expiry = localStorage.getItem(EXPIRES_IN_KEY);
 
-    if (token && expiry && Date.now() < parseInt(expiry)) {
-      const remainingTime = parseInt(expiry) - Date.now();
-      startLogoutTimer(remainingTime);
-      return { authenticated: true };
+    if (token) {
+      if (expiry && Date.now() < parseInt(expiry)) {
+        const remainingTime = parseInt(expiry) - Date.now();
+        startLogoutTimer(remainingTime);
+        return { authenticated: true };
+      } else {
+        startLogoutTimer(0);
+      }
     }
 
     return {
       authenticated: false,
       error: {
-        message: 'Check failed',
-        name: 'Token expired or not found',
+        message: "Check failed",
+        name: "Token expired or not found",
       },
       logout: true,
       redirectTo: '/login',
@@ -115,7 +109,7 @@ export const authProvider: AuthProvider = {
 
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/user/email/${loggedInEmail}`,
+        `${import.meta.env.VITE_SERVER}/api/v1/user/email/${loggedInEmail}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -126,23 +120,25 @@ export const authProvider: AuthProvider = {
       return {
         id: userId,
         name: name,
-        avatar: 'https://i.pravatar.cc/150', // Placeholder or fetch from API if available
+        avatar: "https://i.pravatar.cc/150",
       };
     } catch (error) {
-      console.error('Error fetching user identity:', error);
+      console.error("Error fetching user identity:", error);
       return null;
     }
   },
+  onError: function (error: any): Promise<OnErrorResponse> {
+    throw new Error("Function not implemented.");
+  },
 };
 
-// Helper functions
 const startLogoutTimer = (duration: number) => {
   clearLogoutTimer();
   logoutTimer = setTimeout(async () => {
-    await authProvider.logout();
+    await authProvider.logout({});
     notification.warning({
-      message: 'Session Expired',
-      description: 'You have been logged out due to inactivity.',
+      message: "Session Expired",
+      description: "You have been logged out due to inactivity.",
     });
   }, duration);
 };

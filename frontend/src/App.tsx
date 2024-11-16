@@ -1,58 +1,44 @@
-import React from 'react';
-import { Authenticated, Refine } from '@refinedev/core';
-import { RefineKbarProvider, RefineKbar } from '@refinedev/kbar';
 import {
-  useNotificationProvider,
-  ThemedLayoutV2,
+  DashboardOutlined,
+  ShoppingOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import {
   ErrorComponent,
-} from '@refinedev/antd';
+  ThemedLayoutV2,
+  useNotificationProvider,
+} from "@refinedev/antd";
+import { Authenticated, Refine } from "@refinedev/core";
+import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import routerProvider, {
   CatchAllNavigate,
+  DocumentTitleHandler,
   NavigateToResource,
   UnsavedChangesNotifier,
-  DocumentTitleHandler,
-} from '@refinedev/react-router-v6';
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
-import {
-  ShoppingOutlined,
-  ShopOutlined,
-  DashboardOutlined,
-  UserOutlined,
-  UnorderedListOutlined,
-  TagsOutlined,
-} from '@ant-design/icons';
-import jsonServerDataProvider from '@refinedev/simple-rest';
-import { authProvider } from './authProvider';
+} from "@refinedev/react-router-v6";
+import jsonServerDataProvider from "@refinedev/simple-rest";
+import React from "react";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import { authProvider } from "./authProvider";
 
 import 'dayjs/locale/de';
 
-import { DashboardPage } from './pages/dashboard';
-import { OrderList, OrderShow } from './pages/orders';
-import { AuthPage } from './pages/auth';
-import { CustomerShow, CustomerList } from './pages/customers';
-import { UserManagement, CourierCreate, CourierEdit } from './pages/couriers';
-import {
-  ProductList,
-  ProductCreate,
-  ProductEdit,
-  ProductShow,
-} from './pages/products';
-import { StoreCreate, StoreEdit, StoreList } from './pages/stores';
-import { CategoryList } from './pages/categories';
-import { useTranslation } from 'react-i18next';
-import { Header, Title } from './components';
-import { BikeWhiteIcon } from './components/icons';
-import { ConfigProvider } from './context';
-import { useAutoLoginForDemo } from './hooks';
+import { useTranslation } from "react-i18next";
+import { Header, Title } from "./components";
+import { ConfigProvider } from "./context";
+import { useAutoLoginForDemo } from "./hooks";
+import { AuthPage } from "./pages/auth";
+import { CourierCreate, CourierEdit, UserManagement } from "./pages/couriers";
+import { CustomerList, CustomerShow } from "./pages/customers";
+import { DashboardPage } from "./pages/dashboard";
+import { OrderList, OrderShow } from "./pages/orders";
 
 import '@refinedev/antd/dist/reset.css';
 
 const App: React.FC = () => {
-  // This hook is used to automatically login the user.
-  // We use this hook to skip the login page and demonstrate the application more quickly.
   const { loading } = useAutoLoginForDemo();
 
-  const API_URL = ''; // Update API URL
+  const API_URL = "";
   const dataProvider = jsonServerDataProvider(API_URL);
 
   const { t, i18n } = useTranslation();
@@ -92,9 +78,9 @@ const App: React.FC = () => {
                 },
               },
               {
-                name: 'orders', // Change name from orders to purchaseHistory
-                list: '/purchaseHistory', // Update list route
-                show: '/purchaseHistory/:id', // Update show route
+                name: "orders",
+                list: "/purchaseHistory",
+                show: "/purchaseHistory/:id",
                 meta: {
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
                   icon: <ShoppingOutlined />,
@@ -139,14 +125,14 @@ const App: React.FC = () => {
               //   },
               // },
               {
-                name: 'UserManagement',
-                list: '/UserManagement',
-                create: '/UserManagement/new',
-                edit: '/UserManagement/:id/edit',
-                show: '/UserManagement/:id',
+                name: "Users",
+                list: "/UserManagement",
+                create: "/UserManagement/new",
+                edit: "/UserManagement/:id/edit",
+                show: "/UserManagement/:id",
                 meta: {
                   // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-                  icon: <BikeWhiteIcon />,
+                  icon: <UserOutlined />,
                 },
               },
             ]}
@@ -179,14 +165,7 @@ const App: React.FC = () => {
                   <Route path=":id" element={<OrderShow />} />
                 </Route>
 
-                <Route
-                  path="/customers"
-                  element={
-                    <CustomerList>
-                      <Outlet />
-                    </CustomerList>
-                  }
-                >
+                <Route path="/customers" element={<CustomerList />}>
                   <Route path=":id" element={<CustomerShow />} />
                 </Route>
 
@@ -212,14 +191,7 @@ const App: React.FC = () => {
                 {/* <Route path="/categories" element={<CategoryList />} /> */}
 
                 <Route path="/UserManagement">
-                  <Route
-                    path=""
-                    element={
-                      <UserManagement>
-                        <Outlet />
-                      </UserManagement>
-                    }
-                  >
+                  <Route path="" element={<UserManagement />}>
                     <Route path="new" element={<CourierCreate />} />
                   </Route>
 
@@ -241,8 +213,8 @@ const App: React.FC = () => {
                       type="login"
                       formProps={{
                         initialValues: {
-                          email: 'admin@timperio.com',
-                          password: 'password123',
+                          email: "",
+                          password: "",
                         },
                       }}
                     />
@@ -255,8 +227,8 @@ const App: React.FC = () => {
                       type="register"
                       formProps={{
                         initialValues: {
-                          email: '',
-                          password: 'demodemo',
+                          email: "",
+                          password: "",
                         },
                       }}
                     />

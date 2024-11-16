@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.Timperio.constant.UrlConstant;
 import com.Timperio.enums.ErrorMessage;
 import com.Timperio.enums.Role;
 
@@ -32,8 +33,7 @@ public class SecurityConfig {
     @Value("${SERVER}")
     private String serverUrl;
 
-    public SecurityConfig(
-            JwtAuthenticationFilter jwtAuthenticationFilter,
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
             AuthenticationProvider authenticationProvider) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -41,19 +41,32 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
+        http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/auth/login").permitAll()
+                        .requestMatchers(UrlConstant.API_VERSION + "/auth/login", "/v3/api-docs/**", "/swagger-ui/**")
+                        .permitAll()
+
+                        .requestMatchers(UrlConstant.API_VERSION + "/purchaseHistory")
+                        .hasAnyRole(Role.MARKETING.toString(), Role.SALES.toString())
+
+                        .requestMatchers(UrlConstant.API_VERSION + "/export").hasRole(Role.MARKETING.toString())
+
+                        .requestMatchers(UrlConstant.API_VERSION + "/customers/**").hasRole(Role.SALES.toString())
+
+                        .requestMatchers(UrlConstant.API_VERSION + "/user").hasRole(Role.ADMIN.toString())
+
+                        .requestMatchers(UrlConstant.API_VERSION + "/newsletter/**")
+                        .hasAnyRole(Role.ADMIN.toString(), Role.MARKETING.toString())
+
                         .anyRequest().authenticated())
-                .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .accessDeniedHandler(customAccessDeniedHandler())
-                        .authenticationEntryPoint(customAuthenticationEntryPoint()))
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                .exceptionHandling(
+                        exceptionHandling -> exceptionHandling.accessDeniedHandler(customAccessDeniedHandler())
+                                .authenticationEntryPoint(customAuthenticationEntryPoint()))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .cors(); // Ensure CORS is enabled
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         return http.build();
     }
@@ -68,8 +81,7 @@ public class SecurityConfig {
     private AccessDeniedHandler customAccessDeniedHandler() {
         return (request, response, accessDeniedException) -> {
             response.setStatus(HttpStatus.FORBIDDEN.value());
-            response.getWriter()
-                    .write(ErrorMessage.FORBIDDEN.getMessage());
+            response.getWriter().write(ErrorMessage.FORBIDDEN.getMessage());
         };
     }
 
@@ -77,14 +89,13 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Make sure this is correctly pointing to your frontend URL(s)
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Add more URLs if needed
+        configuration.setAllowedOrigins(List.of(serverUrl));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-        configuration.setAllowCredentials(true); // Allow credentials like cookies if needed
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Apply to all endpoints
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }
