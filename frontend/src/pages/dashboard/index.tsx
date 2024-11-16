@@ -18,14 +18,13 @@ import {
   TrendUpIcon,
 } from "../../components";
 
+import { List, NumberField } from "@refinedev/antd";
+import { useApiUrl, useCustom } from "@refinedev/core";
+import dayjs from "dayjs";
+import { useMemo, useState } from "react";
+import { END_DATE, START_DATE } from "../../constant";
+import type { ISalesChart } from "../../interfaces";
 
-
-import { useMemo, useState } from 'react';
-import { List, NumberField } from '@refinedev/antd';
-import { useApiUrl, useCustom } from '@refinedev/core';
-import dayjs from 'dayjs';
-import type { ISalesChart } from '../../interfaces';
-import DateRangePicker from './daterangepicker'; // Import the DateRangePicker component
 
 type DateFilter = 'lastWeek' | 'lastMonth';
 
@@ -52,8 +51,8 @@ export const DashboardPage: React.FC = () => {
   const API_URL = useApiUrl();
 
   const [selectedDateRange, setSelectedDateRange] = useState({
-    start: dayjs("2022-01-01").format("YYYY-MM-DD"), // Start of the year
-    end: dayjs().format("2022-02-01"), // Default: today
+    start: START_DATE.toString(),
+    end: END_DATE.toString(),
   });
 
   const handleDateChange = (dates: any) => {
@@ -66,7 +65,7 @@ export const DashboardPage: React.FC = () => {
   };
 
   const dateFilters: MenuProps["items"] = useMemo(() => {
-    const filters = ["lastWeek", "lastMonth"]; // Example of filters
+    const filters = ["lastWeek", "lastMonth"];
     return filters.map((filter) => ({
       key: filter,
       label: t(`dashboard.filter.date.${filter}`),
