@@ -55,8 +55,8 @@ public class SecurityConfig {
 
                         .requestMatchers(UrlConstant.API_VERSION + "/user").hasRole(Role.ADMIN.toString())
 
-                        // .requestMatchers(UrlConstant.API_VERSION + "/newsletter/**")
-                        // .hasAnyRole(Role.ADMIN.toString(), Role.MARKETING.toString())
+                        .requestMatchers(UrlConstant.API_VERSION + "/newsletter/**")
+                        .hasAnyRole(Role.ADMIN.toString(), Role.MARKETING.toString())
 
                         .anyRequest().authenticated())
 

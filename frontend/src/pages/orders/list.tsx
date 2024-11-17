@@ -157,13 +157,12 @@ export const OrderList = () => {
 
   return (
     <div>
-     <List
+      <List
         title={t("Purchase History")}
         headerButtons={() => (
           <Col>
             <Button
               type="primary"
-              danger
               icon={
                 <ExportOutlined
                   onPointerEnterCapture={undefined}
@@ -171,7 +170,11 @@ export const OrderList = () => {
                 />
               }
               onClick={showCreateUserModal}
-              style={{ float: "right", marginBottom: "16px" }}
+              style={{
+                float: "right",
+                marginBottom: "16px",
+                backgroundColor: "#014214",
+              }}
             >
               {t("Export to CSV")}
             </Button>
