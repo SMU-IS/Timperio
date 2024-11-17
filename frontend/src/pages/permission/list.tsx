@@ -156,6 +156,11 @@ export const PermissionManagement = () => {
         onOk={() => form.submit()}
         okText="Update"
         cancelText="Cancel"
+        okButtonProps={{
+          style: {
+            backgroundColor: "#014214",
+          },
+        }}
       >
         <Form form={form} layout="vertical" onFinish={handleEditUser}>
           <Form.Item>
