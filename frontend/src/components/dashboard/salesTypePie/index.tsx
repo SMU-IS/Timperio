@@ -86,14 +86,14 @@ export const SalesTypePieChart = ({ height, selectedDateRange }: Props) => {
       title: {
         content: "Total Sales", // Title in the center of the donut
         style: {
-          fontSize: 16, // Font size for the title
+          fontSize: "16", // Font size for the title
           fontWeight: "bold", // Font weight for the title
         },
       },
       content: {
         content: `$${data.reduce((sum, d) => sum + d.value, 0).toFixed(2)}`, // Total value in the center
         style: {
-          fontSize: 14, // Font size for the total value
+          fontSize: '14', // Font size for the total value
           color: "#666", // Font color
         },
       },

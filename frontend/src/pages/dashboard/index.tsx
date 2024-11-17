@@ -27,8 +27,7 @@ import { useMemo, useState } from "react";
 import { END_DATE, START_DATE } from "../../constant";
 import type { ISalesChart } from "../../interfaces";
 
-
-type DateFilter = 'lastWeek' | 'lastMonth';
+type DateFilter = "lastWeek" | "lastMonth";
 
 const DATE_FILTERS: Record<
   DateFilter,
@@ -38,12 +37,12 @@ const DATE_FILTERS: Record<
   }
 > = {
   lastWeek: {
-    text: 'lastWeek',
-    value: 'lastWeek',
+    text: "lastWeek",
+    value: "lastWeek",
   },
   lastMonth: {
-    text: 'lastMonth',
-    value: 'lastMonth',
+    text: "lastMonth",
+    value: "lastMonth",
   },
 };
 
@@ -101,20 +100,20 @@ export const DashboardPage: React.FC = () => {
   const dateFilterQuery = useMemo(() => {
     const now = dayjs();
     switch (selecetedDateFilter) {
-      case 'lastWeek':
+      case "lastWeek":
         return {
-          start: now.subtract(6, 'days').startOf('day').format(),
-          end: now.endOf('day').format(),
+          start: now.subtract(6, "days").startOf("day").format(),
+          end: now.endOf("day").format(),
         };
-      case 'lastMonth':
+      case "lastMonth":
         return {
-          start: now.subtract(1, 'month').startOf('day').format(),
-          end: now.endOf('day').format(),
+          start: now.subtract(1, "month").startOf("day").format(),
+          end: now.endOf("day").format(),
         };
       default:
         return {
-          start: now.subtract(7, 'days').startOf('day').format(),
-          end: now.endOf('day').format(),
+          start: now.subtract(7, "days").startOf("day").format(),
+          end: now.endOf("day").format(),
         };
     }
   }, [selecetedDateFilter]);
@@ -125,7 +124,7 @@ export const DashboardPage: React.FC = () => {
     trend: number;
   }>({
     url: `${API_URL}/dailyRevenue`,
-    method: 'get',
+    method: "get",
     config: {
       query: dateFilterQuery,
     },
@@ -137,7 +136,7 @@ export const DashboardPage: React.FC = () => {
     trend: number;
   }>({
     url: `${API_URL}/dailyOrders`,
-    method: 'get',
+    method: "get",
     config: {
       query: dateFilterQuery,
     },
@@ -149,7 +148,7 @@ export const DashboardPage: React.FC = () => {
     trend: number;
   }>({
     url: `${API_URL}/newCustomers`,
-    method: 'get',
+    method: "get",
     config: {
       query: dateFilterQuery,
     },
@@ -167,9 +166,9 @@ export const DashboardPage: React.FC = () => {
       const date = dayjs(revenue.date);
       return {
         timeUnix: date.unix(),
-        timeText: date.format('DD MMM YYYY'),
+        timeText: date.format("DD MMM YYYY"),
         value: revenue.value,
-        state: 'Daily Revenue',
+        state: "Daily Revenue",
       };
     });
 
@@ -187,9 +186,9 @@ export const DashboardPage: React.FC = () => {
       const date = dayjs(order.date);
       return {
         timeUnix: date.unix(),
-        timeText: date.format('DD MMM YYYY'),
+        timeText: date.format("DD MMM YYYY"),
         value: order.value,
-        state: 'Daily Orders',
+        state: "Daily Orders",
       };
     });
 
@@ -207,9 +206,9 @@ export const DashboardPage: React.FC = () => {
       const date = dayjs(customer.date);
       return {
         timeUnix: date.unix(),
-        timeText: date.format('DD MMM YYYY'),
+        timeText: date.format("DD MMM YYYY"),
         value: customer.value,
-        state: 'New Customers',
+        state: "New Customers",
       };
     });
 
@@ -221,7 +220,7 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <List
-      title={t('dashboard.overview.title')}
+      title={t("dashboard.overview.title")}
       headerButtons={() => (
         <Col>
           <DatePicker.RangePicker
@@ -272,7 +271,6 @@ export const DashboardPage: React.FC = () => {
                   />
                 }
                 title={t("Sales Type Revenue")}
-                rightSlot={<Flex align="center" gap={8}></Flex>}
               >
                 <SalesTypePieChart
                   height={170}
