@@ -32,6 +32,7 @@ import { CourierCreate, CourierEdit, UserManagement } from "./pages/couriers";
 import { CustomerList, CustomerShow } from "./pages/customers";
 import { DashboardPage } from "./pages/dashboard";
 import { OrderList, OrderShow } from "./pages/orders";
+import { NewsLetter } from "./pages/newsletter";
 
 import '@refinedev/antd/dist/reset.css';
 
@@ -134,6 +135,15 @@ const App: React.FC = () => {
                   icon: <UserOutlined />,
                 },
               },
+              {
+                name: "newsletter",
+                list: "/newsletter",
+                show: "/newsletter",
+                meta: {
+                  // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
+                  icon: <UserOutlined />,
+                },
+              },
             ]}
           >
             <Routes>
@@ -166,6 +176,10 @@ const App: React.FC = () => {
 
                 <Route path="/customers" element={<CustomerList />}>
                   <Route path=":id" element={<CustomerShow />} />
+                </Route>
+
+                <Route path="/newsletter" element={<NewsLetter />}>
+                  <Route element={<NewsLetter />} />
                 </Route>
 
                 {/* <Route
