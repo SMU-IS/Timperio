@@ -1,4 +1,4 @@
-import { Typography } from "antd";
+import { Table, Typography, Spin } from "antd";
 import { Statistic } from "antd/lib";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -75,34 +75,47 @@ export const TrendingMenu = ({
     fetchTrendingData(start, end);
   }, [selectedDateRange]);
 
+  // Define the columns for the Ant Design Table
+  const columns = [
+    {
+      title: "Product",
+      dataIndex: "product",
+      key: "product",
+    },
+    {
+      title: "Qty",
+      dataIndex: "count",
+      key: "count",
+      align: "center",
+      render: (count: number) => (
+        <Statistic value={count} valueStyle={{ fontSize: "14px" }} /> // Using Statistic for Qty
+      ),
+    },
+  ];
+
+  const dataSource = data.map((product, index) => ({
+    key: index, // Unique key required by Ant Design
+    product: product.product,
+    count: product.count,
+  }));
+
   return (
     <div>
       {loading ? (
-        <div>Loading...</div>
+        <div style={{ textAlign: "center", padding: "20px" }}>
+          <Spin size="large" /> {/* Ant Design spinner */}
+        </div>
       ) : data.length === 0 ? (
-        <div style={{ padding: 20 }}>
+        <div style={{ padding: 20, textAlign: "center" }}>
           No data available for the selected range.
         </div>
       ) : (
-        <div
-          style={{
-            paddingLeft: "20px",
-            marginTop: "10px",
-            marginBottom: "10px",
-          }}
-        >
-          {data.map((product, index) => (
-            <div key={index} style={{ display: "flex", alignItems: "center" }}>
-              <Statistic
-                value={product.count}
-                formatter={formatWithoutDollarSign as any}
-              />
-              <Typography.Text style={{ marginLeft: "9px" }}>
-                {product.product}
-              </Typography.Text>
-            </div>
-          ))}
-        </div>
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false} // Optional: Disable pagination for small datasets
+          style={{ margin: "10px 20px" }} // Optional: Adjust table margins
+        />
       )}
     </div>
   );
