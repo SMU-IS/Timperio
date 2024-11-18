@@ -3,10 +3,10 @@ package com.Timperio.config;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,21 +21,20 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.Timperio.constant.UrlConstant;
 import com.Timperio.enums.ErrorMessage;
-import com.Timperio.enums.Role;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-    private final AuthenticationProvider authenticationProvider;
+    private final ApplicationConfig applicationConfig;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
+    
     @Value("${SERVER}")
     private String serverUrl;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
-            AuthenticationProvider authenticationProvider) {
-        this.authenticationProvider = authenticationProvider;
+    @Autowired
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, ApplicationConfig applicationConfig) {
+        this.applicationConfig = applicationConfig;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
@@ -47,16 +46,19 @@ public class SecurityConfig {
                         .permitAll()
 
                         .requestMatchers(UrlConstant.API_VERSION + "/purchaseHistory")
-                        .hasAnyRole(Role.MARKETING.toString(), Role.SALES.toString())
+                        .hasAuthority("ACCESS AND FILTER PURCHASE HISTORY")
 
-                        .requestMatchers(UrlConstant.API_VERSION + "/export").hasRole(Role.MARKETING.toString())
+                        .requestMatchers(UrlConstant.API_VERSION + "/export")
+                        .hasAuthority("EXPORT FILTERED DATA")
 
-                        .requestMatchers(UrlConstant.API_VERSION + "/customers/**").hasRole(Role.SALES.toString())
+                        .requestMatchers(UrlConstant.API_VERSION + "/customers/**")
+                        .hasAnyAuthority("VIEW SALES METRICS", "SEGMENT CUSTOMERS BY SPENDING")
 
-                        .requestMatchers(UrlConstant.API_VERSION + "/user").hasRole(Role.ADMIN.toString())
+                        .requestMatchers(UrlConstant.API_VERSION + "/user")
+                        .hasAuthority("MANAGE USER ACCOUNTS")
 
                         .requestMatchers(UrlConstant.API_VERSION + "/newsletter/**")
-                        .hasAnyRole(Role.ADMIN.toString(), Role.MARKETING.toString())
+                        .hasAnyAuthority("CREATE AND SEND NEWSLETTER", "FORMAT NEWSLETTER TEMPLATE")
 
                         .anyRequest().authenticated())
 
@@ -64,10 +66,10 @@ public class SecurityConfig {
                         exceptionHandling -> exceptionHandling.accessDeniedHandler(customAccessDeniedHandler())
                                 .authenticationEntryPoint(customAuthenticationEntryPoint()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider)
+                .authenticationProvider(applicationConfig.authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()));
-
+        
         return http.build();
     }
 
