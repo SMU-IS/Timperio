@@ -96,35 +96,6 @@ const App: React.FC = () => {
                   icon: <UserOutlined />,
                 },
               },
-              // {
-              //   name: 'products',
-              //   list: '/products',
-              //   create: '/products/new',
-              //   edit: '/products/:id/edit',
-              //   show: '/products/:id',
-              //   meta: {
-              //     // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-              //     icon: <UnorderedListOutlined />,
-              //   },
-              // },
-              // {
-              //   name: 'categories',
-              //   list: '/categories',
-              //   meta: {
-              //     // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-              //     icon: <TagsOutlined />,
-              //   },
-              // },
-              // {
-              //   name: 'stores',
-              //   list: '/stores',
-              //   create: '/stores/new',
-              //   edit: '/stores/:id/edit',
-              //   meta: {
-              //     // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-              //     icon: <ShopOutlined />,
-              //   },
-              // },
               {
                 name: "Users",
                 list: "/userManagement",
