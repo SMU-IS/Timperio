@@ -37,19 +37,19 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping()
+    @PostMapping("/admin")
     public ResponseEntity<User> createUser(@RequestBody CreateUpdateUserAdminDto createUserDto) {
         User newUser = this.userService.createUser(createUserDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-    @DeleteMapping("/id/{userId}")
+    @DeleteMapping("/admin/id/{userId}")
     public ResponseEntity<String> deleteUserById(@PathVariable Integer userId) {
         this.userService.deleteUserById(userId);
         return ResponseEntity.ok(SuccessMessage.USER_DELETED_SUCCESS.toString());
     }
 
-    @DeleteMapping("/email/{userEmail}")
+    @DeleteMapping("/admin/email/{userEmail}")
     public ResponseEntity<String> deleteUserByEmail(@PathVariable String userEmail) {
         this.userService.deleteUserByEmail(userEmail);
         return ResponseEntity.ok(SuccessMessage.USER_DELETED_SUCCESS.toString());
