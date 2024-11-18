@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface RolePermissionRepository extends CrudRepository<RolePermission, Integer> {
     List<RolePermission> findByRole(Role role);
+    List<RolePermission> findAll();
 }
