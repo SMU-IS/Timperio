@@ -1,4 +1,4 @@
-package com.Timperio.responses;
+package com.Timperio.dto;
 
 import com.Timperio.enums.Role;
 
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class GetAllRolePermissionResponse {
+public class GetUpdateRolePermission {
     private String action;
     private List<Role> role;
 }
