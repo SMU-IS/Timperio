@@ -39,35 +39,61 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(UrlConstant.API_VERSION + "/auth/login", "/v3/api-docs/**", "/swagger-ui/**")
-                        .permitAll()
-
-                        .requestMatchers(UrlConstant.API_VERSION + "/purchaseHistory")
-                        .hasAuthority("ACCESS AND FILTER PURCHASE HISTORY")
-
-                        .requestMatchers(UrlConstant.API_VERSION + "/export")
-                        .hasAuthority("EXPORT FILTERED DATA")
-
-                        .requestMatchers(UrlConstant.API_VERSION + "/customers/**")
-                        .hasAnyAuthority("VIEW SALES METRICS", "SEGMENT CUSTOMERS BY SPENDING")
-
-                        .requestMatchers(UrlConstant.API_VERSION + "/newsletter/**")
-                        .hasAnyAuthority("CREATE AND SEND NEWSLETTER", "FORMAT NEWSLETTER TEMPLATE")
-
-                        .anyRequest().authenticated())
-
-                .exceptionHandling(
-                        exceptionHandling -> exceptionHandling.accessDeniedHandler(customAccessDeniedHandler())
-                                .authenticationEntryPoint(customAuthenticationEntryPoint()))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(applicationConfig.authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         
+        disableCsrf(http);
+
+        configureAuthorization(http);
+
+        configureExceptionHandling(http);
+
+        configureSessionManagement(http);
+
+        configureAuthentication(http);
+
+        configureCors(http);
+
         return http.build();
+    }
+
+    private void disableCsrf(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable());
+    }
+
+    private void configureAuthorization(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(authorize -> authorize
+            .requestMatchers(UrlConstant.API_VERSION + "/auth/login", "/v3/api-docs/**", "/swagger-ui/**")
+                .permitAll()
+
+            .requestMatchers(UrlConstant.API_VERSION + "/purchaseHistory")
+                .hasAuthority("ACCESS AND FILTER PURCHASE HISTORY")
+            .requestMatchers(UrlConstant.API_VERSION + "/export")
+                .hasAuthority("EXPORT FILTERED DATA")
+            .requestMatchers(UrlConstant.API_VERSION + "/customers/**")
+                .hasAnyAuthority("VIEW SALES METRICS", "SEGMENT CUSTOMERS BY SPENDING")
+            .requestMatchers(UrlConstant.API_VERSION + "/newsletter/**")
+                .hasAnyAuthority("CREATE AND SEND NEWSLETTER", "FORMAT NEWSLETTER TEMPLATE")
+
+            .anyRequest().authenticated());
+    }
+
+    private void configureExceptionHandling(HttpSecurity http) throws Exception {
+        http.exceptionHandling(exceptionHandling -> exceptionHandling
+            .accessDeniedHandler(customAccessDeniedHandler())
+            .authenticationEntryPoint(customAuthenticationEntryPoint()));
+    }
+
+    private void configureSessionManagement(HttpSecurity http) throws Exception {
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    }
+
+    private void configureAuthentication(HttpSecurity http) throws Exception {
+        http.authenticationProvider(applicationConfig.authenticationProvider())
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+
+    private void configureCors(HttpSecurity http) throws Exception {
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
     }
 
     private AuthenticationEntryPoint customAuthenticationEntryPoint() {
