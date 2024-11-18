@@ -54,9 +54,6 @@ public class SecurityConfig {
                         .requestMatchers(UrlConstant.API_VERSION + "/customers/**")
                         .hasAnyAuthority("VIEW SALES METRICS", "SEGMENT CUSTOMERS BY SPENDING")
 
-                        .requestMatchers(UrlConstant.API_VERSION + "/user/admin/**")
-                        .hasAuthority("MANAGE USER ACCOUNTS")
-
                         .requestMatchers(UrlConstant.API_VERSION + "/newsletter/**")
                         .hasAnyAuthority("CREATE AND SEND NEWSLETTER", "FORMAT NEWSLETTER TEMPLATE")
 
