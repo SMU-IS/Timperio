@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 import com.Timperio.models.User;
 import com.Timperio.repository.UserRepository;
 import com.Timperio.repository.RolePermissionRepository;
+import com.Timperio.exceptions.UserNotFoundException;
+import com.Timperio.enums.ErrorMessage;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -27,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUserEmail(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            .orElseThrow(() -> new UserNotFoundException(ErrorMessage.INVALID_USER_ID.getMessage() + username));
 
         Set<GrantedAuthority> authorities = rolePermissionRepository.findByRole(user.getRole())
             .stream()

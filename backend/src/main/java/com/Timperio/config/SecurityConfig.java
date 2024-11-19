@@ -21,6 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.Timperio.constant.UrlConstant;
 import com.Timperio.enums.ErrorMessage;
+import com.Timperio.enums.Permission;
 
 @Configuration
 @EnableWebSecurity
@@ -66,13 +67,13 @@ public class SecurityConfig {
                 .permitAll()
 
             .requestMatchers(UrlConstant.API_VERSION + "/purchaseHistory")
-                .hasAuthority("ACCESS AND FILTER PURCHASE HISTORY")
+                .hasAuthority(Permission.ACCESS_AND_FILTER_PURCHASE_HISTORY.toString())
             .requestMatchers(UrlConstant.API_VERSION + "/export")
-                .hasAuthority("EXPORT FILTERED DATA")
+                .hasAuthority(Permission.EXPORT_FILTERED_DATA.toString())
             .requestMatchers(UrlConstant.API_VERSION + "/customers/**")
-                .hasAnyAuthority("VIEW SALES METRICS", "SEGMENT CUSTOMERS BY SPENDING")
+                .hasAnyAuthority(Permission.VIEW_SALES_METRICS.toString(), Permission.SEGMENT_CUSTOMERS_BY_SPENDING.toString())
             .requestMatchers(UrlConstant.API_VERSION + "/newsletter/**")
-                .hasAnyAuthority("CREATE AND SEND NEWSLETTER", "FORMAT NEWSLETTER TEMPLATE")
+                .hasAnyAuthority(Permission.CREATE_AND_SEND_NEWSLETTER.toString(), Permission.FORMAT_NEWSLETTER_TEMPLATE.toString())
 
             .anyRequest().authenticated());
     }

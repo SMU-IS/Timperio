@@ -38,21 +38,21 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PreAuthorize("hasAuthority('MANAGE USER ACCOUNTS')")
+    @PreAuthorize("hasAuthority(T(com.Timperio.enums.Permission).MANAGE_USER_ACCOUNTS.getValue())")
     @PostMapping()
     public ResponseEntity<User> createUser(@RequestBody CreateUpdateUserAdminDto createUserDto) {
         User newUser = this.userService.createUser(createUserDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-    @PreAuthorize("hasAuthority('MANAGE USER ACCOUNTS')")
+    @PreAuthorize("hasAuthority(T(com.Timperio.enums.Permission).MANAGE_USER_ACCOUNTS.getValue())")
     @DeleteMapping("/id/{userId}")
     public ResponseEntity<String> deleteUserById(@PathVariable Integer userId) {
         this.userService.deleteUserById(userId);
         return ResponseEntity.ok(SuccessMessage.USER_DELETED_SUCCESS.toString());
     }
 
-    @PreAuthorize("hasAuthority('MANAGE USER ACCOUNTS')")
+    @PreAuthorize("hasAuthority(T(com.Timperio.enums.Permission).MANAGE_USER_ACCOUNTS.getValue())")
     @DeleteMapping("/email/{userEmail}")
     public ResponseEntity<String> deleteUserByEmail(@PathVariable String userEmail) {
         this.userService.deleteUserByEmail(userEmail);
@@ -75,7 +75,7 @@ public class UserController {
         }
     }
 
-    @PreAuthorize("hasAuthority('MANAGE USER ACCOUNTS')")
+    @PreAuthorize("hasAuthority(T(com.Timperio.enums.Permission).MANAGE_USER_ACCOUNTS.getValue())")
     @PutMapping("/admin/{userId}")
     public ResponseEntity<Object> updateUserAdmin(@PathVariable Integer userId,
             @RequestBody CreateUpdateUserAdminDto updateUserDto) {
