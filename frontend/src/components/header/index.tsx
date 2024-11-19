@@ -1,4 +1,4 @@
-import { DownOutlined, SearchOutlined } from "@ant-design/icons";
+import { DownOutlined } from "@ant-design/icons";
 import {
   useGetIdentity,
   useGetLocale,
@@ -11,13 +11,11 @@ import { Link } from "react-router-dom";
 
 import {
   Layout as AntdLayout,
-  AutoComplete,
   Avatar,
   Button,
   Col,
   Dropdown,
   Grid,
-  Input,
   Row,
   Space,
   theme,
@@ -25,7 +23,6 @@ import {
   type MenuProps,
 } from "antd";
 
-import debounce from "lodash/debounce";
 import { useTranslation } from "react-i18next";
 
 import { IconMoon, IconSun } from "../../components/icons";
@@ -198,28 +195,9 @@ export const Header: React.FC = () => {
       <Row
         align="middle"
         style={{
-          justifyContent: screens.sm ? "space-between" : "end",
+          justifyContent: "end",
         }}
       >
-        <Col xs={0} sm={8} md={12}>
-          <AutoComplete
-            style={{
-              width: "100%",
-              maxWidth: "550px",
-            }}
-            options={options}
-            filterOption={false}
-            onSearch={debounce((value: string) => setValue(value), 300)}
-          >
-            <Input
-              size="large"
-              placeholder={"Search"}
-              suffix={<div className={styles.inputSuffix}>/</div>}
-              // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
-              prefix={<SearchOutlined className={styles.inputPrefix} />}
-            />
-          </AutoComplete>
-        </Col>
         <Col>
           <Space size={screens.md ? 32 : 16} align="center">
             <Dropdown
