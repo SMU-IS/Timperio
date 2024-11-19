@@ -25,14 +25,14 @@ public class RolePermissionController {
     @Autowired
     private RolePermissionService rolePermissionService;
 
-    @PreAuthorize("hasAuthority('MANAGE USER ACCOUNTS')")
+    @PreAuthorize("hasAuthority(T(com.Timperio.enums.Permission).MANAGE_USER_ACCOUNTS.getValue())")
     @GetMapping()
     public ResponseEntity<List<GetUpdateRolePermission>> getRolePermissions() {
         List<GetUpdateRolePermission> permissionList = rolePermissionService.getRolePermissions();
         return ResponseEntity.status(HttpStatus.OK).body(permissionList);
     }
 
-    @PreAuthorize("hasAuthority('MANAGE USER ACCOUNTS')")
+    @PreAuthorize("hasAuthority(T(com.Timperio.enums.Permission).MANAGE_USER_ACCOUNTS.getValue())")
     @PutMapping()
     public ResponseEntity<String> updateRolePermissions(@RequestBody List<GetUpdateRolePermission> updates) {
         rolePermissionService.updateRolePermissions(updates);
