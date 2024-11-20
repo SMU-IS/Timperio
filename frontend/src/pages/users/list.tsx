@@ -16,6 +16,7 @@ import { Typography } from "antd/lib";
 import axios from "axios";
 import React, { useState } from "react";
 import type { ICourier } from "../../interfaces";
+import { Permission } from "../../constant";
 
 const { Text } = Typography;
 
@@ -152,18 +153,11 @@ export const UserManagement = () => {
         )}
       />
 
-      <Table dataSource={users} rowKey="userId" pagination={{ pageSize: 10 }}>
+      <Table dataSource={users} rowKey="userId" pagination={false}>
         <Table.Column title="ID" dataIndex="userId" key="userId" />
         <Table.Column title="Name" dataIndex="name" key="name" />
         <Table.Column title="Email" dataIndex="userEmail" key="userEmail" />
         <Table.Column title="Role" dataIndex="role" key="role" />
-        {/* <Table.Column
-          title="Status"
-          dataIndex="enabled"
-          key="enabled"
-          render={(enabled) => (enabled ? "Enabled" : "Disabled")}
-        /> */}
-
         <Table.Column
           title="Action"
           key="action"
@@ -219,7 +213,7 @@ export const UserManagement = () => {
 
       <Modal
         title="Create New User"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         onOk={() => form.submit()}
         okText="Create"
@@ -274,14 +268,18 @@ export const UserManagement = () => {
         </Form>
       </Modal>
 
-      {/* Modal for editing a user */}
       <Modal
         title="Edit User"
-        visible={isEditModalVisible}
+        open={isEditModalVisible}
         onCancel={() => setIsEditModalVisible(false)}
         onOk={() => form.submit()}
         okText="Update"
         cancelText="Cancel"
+        okButtonProps={{
+          style: {
+            backgroundColor: "#014214",
+          },
+        }}
       >
         <Form form={form} layout="vertical" onFinish={handleEditUser}>
           <Form.Item

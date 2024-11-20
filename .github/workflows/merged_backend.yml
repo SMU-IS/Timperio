@@ -1,4 +1,4 @@
-name: Java CI with Maven (Backend)
+name: Format and build backend
 
 on:
   workflow_call:
