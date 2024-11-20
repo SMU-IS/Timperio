@@ -131,6 +131,27 @@ export const CustomerList = () => {
     setSelectedCustomer(null);
   };
 
+  const [filterValue, setFilterValue] = useState("");
+  const [filterValueID, setFilterValueID] = useState("");
+
+  const handleSearch = (value) => {
+    setFilterValue(value);
+  };
+
+  const handleFilter = (value, record) => {
+    console.log(record)
+    return record.customerEmail.toLowerCase().includes(value.toLowerCase());
+  };
+
+  const handleIdSearch = (value) => {
+    setFilterValueID(value);
+  };
+
+  const handleFilterID = (value, record) => {
+    return record.customerId.toString().toLowerCase().includes(value.toLowerCase());
+  };
+
+
   const columns = [
     {
       key: "customerId",
@@ -141,15 +162,34 @@ export const CustomerList = () => {
           #{value}
         </Typography.Text>
       ),
-      sorter: (a, b) => a.customerId - b.customerId,
+      // sorter: (a, b) => a.customerId - b.customerId,
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <Input
+          autoFocus
+          placeholder={t("Search by ID")}
+          value={selectedKeys[0] || ""}
+          onChange={(e) => setSelectedKeys([e.target.value])}
+          onPressEnter={() => handleIdSearch(selectedKeys[0])}
+        />
+      ),
+      onFilter: handleFilterID, // Applying the filter logic
+      filteredValue: filterValueID ? [filterValueID] : null, // Applying the current filter value
     },
     {
       key: "customerEmail",
       dataIndex: "customerEmail",
       title: "Email",
-      filterDropdown: (props) => (
-        <Input {...props} placeholder={t("users.filter.email.placeholder")} />
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+          <Input
+            autoFocus
+            placeholder={t("Search for email")}
+            value={selectedKeys[0] || ""}
+            onChange={(e) => setSelectedKeys([e.target.value])}
+            onPressEnter={() => handleSearch(selectedKeys[0])}
+          />
       ),
+      onFilter: handleFilter, // Applying the filter logic
+      filteredValue: filterValue ? [filterValue] : null, // Applying the current filter value
     },
     {
       key: "purchaseHistory",
